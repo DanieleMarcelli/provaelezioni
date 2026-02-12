@@ -1,0 +1,195 @@
+/* ============================================================
+   DataStore — Avigliano Umbro 2027
+   Persistent JSON store with promise↔result matching engine
+   ============================================================ */
+const DataStore = (() => {
+  const SK = 'av27_v2';
+
+  /* -------- AREA META -------- */
+  const AREAS = {
+    '1': { name: 'Politiche sociali', icon: '🫶', color: '#E8457C' },
+    '2': { name: 'Cultura e turismo', icon: '🎭', color: '#E9A319' },
+    '3': { name: 'Opere pubbliche', icon: '🏗️', color: '#7C5CFC' },
+    '4': { name: 'Ambiente', icon: '🌿', color: '#0DA678' },
+    '5': { name: 'Trasparenza e servizi', icon: '📋', color: '#2B7FFF' }
+  };
+
+  /* -------- DEFAULT PROMISES (from Programma Elettorale) -------- */
+  const DP = [
+    { id:'P01',area:'1',tema:'Natalità e famiglia',testo:'Iniziative a sostegno della natalità e prima infanzia: pacco nuovi nati, voucher asilo nido Sismano, aiuti famiglie numerose',rif:'Programma – Sociale',tag:['natalità','famiglia','infanzia']},
+    { id:'P02',area:'1',tema:'Terza età',testo:'Supportare iniziative terza età, sviluppare spazi aggregazione, favorire struttura diurna anziani',rif:'Programma – Sociale',tag:['anziani','aggregazione']},
+    { id:'P03',area:'1',tema:'Giovani',testo:'Iniziative per giovani: sensibilizzazione, prevenzione dipendenze, cineforum, discussioni, progetti scuole',rif:'Programma – Sociale',tag:['giovani','scuola','prevenzione']},
+    { id:'P04',area:'1',tema:'Educazione civica',testo:'Educazione civica, alimentare e ambientale nelle scuole con associazioni e distretto biologico',rif:'Programma – Sociale',tag:['scuola','educazione']},
+    { id:'P05',area:'1',tema:'Trasporto scolastico',testo:'Agevolazioni per il trasporto scolastico',rif:'Programma – Sociale',tag:['scuolabus','agevolazioni']},
+    { id:'P06',area:'1',tema:'Agevolazioni fiscali',testo:'Agevolazioni fiscali in base a fasce ISEE per famiglie in difficoltà',rif:'Programma – Sociale',tag:['fiscale','ISEE']},
+    { id:'P07',area:'1',tema:'Punto prelievi',testo:'Impegno per punto prelievi USL sul territorio comunale',rif:'Programma – Sociale',tag:['sanità','prelievi']},
+    { id:'P08',area:'1',tema:'Volontariato',testo:'Polo del volontariato per coordinare iniziative a favore cittadini svantaggiati',rif:'Programma – Sociale',tag:['volontariato','associazioni']},
+    { id:'P09',area:'1',tema:'Prevenzione violenza',testo:'Sportello e iniziative prevenzione violenza di genere e supporto psicologico',rif:'Programma – Sociale',tag:['violenza','prevenzione']},
+    { id:'P10',area:'2',tema:'Biblioteca',testo:'Riaprire biblioteca con nuova gestione (servizio civile, intercomunale, associazioni). Calendario attività formative e culturali',rif:'Programma – Cultura',tag:['biblioteca','cultura','formazione']},
+    { id:'P11',area:'2',tema:'Struttura polivalente',testo:'Progettare struttura polivalente / teatro per grandi eventi',rif:'Programma – Cultura',tag:['teatro','polivalente','eventi']},
+    { id:'P12',area:'2',tema:'Eventi culturali',testo:'Eventi culturali importanti: Festa musica, Foresta Fossile, Carnevale in manifesto ampio tutto l\'anno',rif:'Programma – Cultura',tag:['eventi','musica','carnevale']},
+    { id:'P13',area:'2',tema:'Festival cultura',testo:'Studio per festival della cultura (Cinema, Teatro, Musica)',rif:'Programma – Cultura',tag:['festival','cinema','teatro']},
+    { id:'P14',area:'2',tema:'Borghi storici',testo:'Fase 2 riqualificazione borghi con promozione turistica. Circuito "borghi più belli d\'Italia"',rif:'Programma – Cultura',tag:['borghi','turismo']},
+    { id:'P15',area:'2',tema:'Grotta Bella',testo:'Proseguire studi Grotta Bella, valorizzare e rendere fruibile',rif:'Programma – Cultura',tag:['grotta','natura']},
+    { id:'P16',area:'2',tema:'Ufficio turistico',testo:'Ufficio turistico, portale, simbolo identificativo, miglioramento cartellonistica',rif:'Programma – Cultura',tag:['turismo','comunicazione','segnaletica']},
+    { id:'P17',area:'2',tema:'Sentieri',testo:'Valorizzazione sentieri escursionistici e percorso intercomunale integrato',rif:'Programma – Cultura',tag:['sentieri','escursionismo']},
+    { id:'P18',area:'2',tema:'Aree ristoro e camper',testo:'Riqualificazione aree ristoro. Aree camper Sismano e capoluogo',rif:'Programma – Cultura',tag:['camper','ristoro']},
+    { id:'P19',area:'2',tema:'Gemellaggi',testo:'Ripresa gemellaggio e scambi culturali interscolastici',rif:'Programma – Cultura',tag:['gemellaggio','scuola']},
+    { id:'P20',area:'2',tema:'Fiere e sagre',testo:'Fiere tematiche per artigianato e enogastronomia locale',rif:'Programma – Cultura',tag:['fiere','gastronomia']},
+    { id:'P21',area:'2',tema:'Foresta Fossile',testo:'Far conoscere la Foresta Fossile a livello internazionale',rif:'Programma – Cultura',tag:['foresta fossile','paleontologia']},
+    { id:'P22',area:'2',tema:'Filo della tradizione',testo:'Iniziative per riscoprire arte del ricamo e avvicinare giovani alle tradizioni',rif:'Programma – Associazionismo',tag:['tradizioni','ricamo']},
+    { id:'P23',area:'3',tema:'Strade',testo:'Piano asfalto strade sterrate/brecciate. Regimentazione acque. Ingresso Toscolano',rif:'Programma – Opere',tag:['strade','asfalto','manutenzione']},
+    { id:'P24',area:'3',tema:'Strade provinciali',testo:'Sollecitare Provincia per SP39 (Sismano) e SP37 (S. Restituta/Toscolano)',rif:'Programma – Opere',tag:['provincia','SP39','SP37']},
+    { id:'P25',area:'3',tema:'Parchi e giochi',testo:'Sistemare parchi Dunarobba, Toscolano, capoluogo. Parco Sant\'Egidio con illuminazione e giochi',rif:'Programma – Opere',tag:['parchi','giochi','verde']},
+    { id:'P26',area:'3',tema:'Nuovi spazi',testo:'Spazio-giochi S. Restituta/Pian dell\'Ara. Parco Piacenti con palestra all\'aperto',rif:'Programma – Opere',tag:['spazi','sport']},
+    { id:'P27',area:'3',tema:'Ex Cottolengo',testo:'Rendere fruibile Ex Cottolengo con nuova destinazione, collaborazione pubblico/privato',rif:'Programma – Opere',tag:['cottolengo','aggregazione']},
+    { id:'P28',area:'3',tema:'Teatro comunale',testo:'Sistemazione ed efficientamento energetico Teatro Comunale',rif:'Programma – Opere',tag:['teatro','energia']},
+    { id:'P29',area:'3',tema:'Viabilità',testo:'Marciapiedi nuovi e esistenti capoluogo e frazioni. Revisione generale viabilità',rif:'Programma – Opere',tag:['marciapiedi','viabilità']},
+    { id:'P30',area:'3',tema:'Parcheggi',testo:'Incremento parcheggi centro storico Avigliano e Toscolano',rif:'Programma – Opere',tag:['parcheggi']},
+    { id:'P31',area:'3',tema:'Arredo urbano',testo:'Panchine, cestini, piantumazione, riqualificazione piazzette Santa Restituta',rif:'Programma – Opere',tag:['arredo','verde','panchine']},
+    { id:'P32',area:'3',tema:'Illuminazione',testo:'Efficientamento illuminazione Toscolano/S. Restituta. Incremento punti luce',rif:'Programma – Opere',tag:['illuminazione','energia']},
+    { id:'P33',area:'3',tema:'Cimiteri',testo:'Riqualificazione cimiteri Avigliano e frazioni',rif:'Programma – Opere',tag:['cimiteri']},
+    { id:'P34',area:'3',tema:'Ripopolamento',testo:'Recupero edifici abbandonati. Incentivi giovani per centri storici',rif:'Programma – Opere',tag:['ripopolamento','giovani']},
+    { id:'P35',area:'4',tema:'Rifiuti',testo:'Raccolta differenziata con tariffa puntuale. Compattatore. Cestini. Controllo abbandono',rif:'Programma – Ambiente',tag:['rifiuti','TARIC','differenziata']},
+    { id:'P36',area:'4',tema:'Randagismo',testo:'Contenimento randagismo: chippatura, sterilizzazione, incentivi adozioni',rif:'Programma – Ambiente',tag:['randagismo','animali']},
+    { id:'P37',area:'4',tema:'Tutela ambientale',testo:'Colonnine elettriche. Recupero fontanili. Comune amico delle api',rif:'Programma – Ambiente',tag:['ambiente','elettrico','api']},
+    { id:'P38',area:'5',tema:'Sportello cittadino',testo:'Sportello del cittadino, pagina social, portale segnalazioni',rif:'Programma – Trasparenza',tag:['sportello','trasparenza']},
+    { id:'P39',area:'5',tema:'Consulta giovani',testo:'Consiglio comunale giovani per avvicinarli all\'amministrazione',rif:'Programma – Trasparenza',tag:['giovani','consulta']},
+    { id:'P40',area:'5',tema:'Consulta frazioni',testo:'Consulta e consigliere delegato per segnalazioni frazioni',rif:'Programma – Trasparenza',tag:['frazioni','consulta']},
+    { id:'P41',area:'5',tema:'Commercio',testo:'Favorire insediamento attività, collaborare con commercianti, "Regaliamoci Avigliano"',rif:'Programma – Commercio',tag:['commercio','imprese']},
+    { id:'P42',area:'5',tema:'Digitalizzazione',testo:'Digitalizzazione ente. Fibra. Archivio digitale',rif:'Programma – Commercio',tag:['digitalizzazione','fibra']},
+    { id:'P43',area:'5',tema:'Sport',testo:'Illuminazione/recinzioni campetti. Aree polisportive. Palestra all\'aperto',rif:'Programma – Sport',tag:['sport','impianti']},
+    { id:'P44',area:'5',tema:'Sicurezza',testo:'Riorganizzazione polizia municipale. Videosorveglianza. Zone emergenza',rif:'Programma – Sicurezza',tag:['sicurezza','polizia']},
+    { id:'P45',area:'5',tema:'Associazionismo',testo:'Sostenere associazioni e promuovere iniziative collaborative',rif:'Programma – Associazionismo',tag:['associazioni','volontariato']},
+  ];
+
+  /* -------- DEFAULT PROJECTS -------- 
+     tipo: "opera" → ha senso prima/dopo visivo
+           "servizio" → servizio attivato, mostra impatto/KPI
+           "azione" → atto amministrativo, delibera, iniziativa puntuale
+  */
+  const DR = [
+    {id:'R01',area:'1',tipo:'servizio',titolo:'Borgo 0–6 Sismano',desc:'Attivazione servizio educativo 0-6 anni a Sismano',localita:'Sismano',anno:'2023',stato:'concluso',importo:null,fonte:'Comune',impatto:'Nuovo servizio per famiglie della frazione',prima:[],dopo:[],note:'',link:'',promesse:['P01']},
+    {id:'R02',area:'1',tipo:'servizio',titolo:'Corsi genitorialità e adolescenza',desc:'Percorsi formativi con CIPSS e Pepita su genitorialità e problematiche adolescenziali',localita:'Avigliano',anno:'2023',stato:'concluso',importo:null,fonte:'Comune',impatto:'Famiglie e ragazzi coinvolti nei percorsi',prima:[],dopo:[],note:'',link:'',promesse:['P03','P04']},
+    {id:'R03',area:'1',tipo:'azione',titolo:'Ammortizzazione costi scuolabus e mensa',desc:'Contenimento degli aumenti per le famiglie',localita:'Tutto il territorio',anno:'2022',stato:'concluso',importo:null,fonte:'Comune',impatto:'Ridotto impatto economico sulle famiglie',prima:[],dopo:[],note:'',link:'',promesse:['P05','P06']},
+    {id:'R04',area:'1',tipo:'azione',titolo:'Bando case popolari + assegnazioni',desc:'Pubblicazione bando e assegnazione alloggi ERP',localita:'Avigliano',anno:'2024',stato:'concluso',importo:null,fonte:'Comune/Regione',impatto:'Alloggi assegnati a famiglie in difficoltà',prima:[],dopo:[],note:'',link:'',promesse:['P06']},
+    {id:'R05',area:'1',tipo:'servizio',titolo:'Consulta Comunale dei Giovani',desc:'Avvio Consulta con incontri istituzionali e coinvolgimento giovanile',localita:'Avigliano',anno:'2024',stato:'concluso',importo:null,fonte:'Comune',impatto:'Giovani coinvolti nella vita amministrativa',prima:[],dopo:[],note:'',link:'',promesse:['P39','P03']},
+
+    {id:'R06',area:'2',tipo:'servizio',titolo:'Biblioteca "Maestra Emilia Bettelli"',desc:'Riapertura e rilancio a costo zero grazie a Servizio Civile e volontari civici',localita:'Avigliano',anno:'2022',stato:'concluso',importo:0,fonte:'Servizio Civile / Volontariato',impatto:'Biblioteca riaperta a costo zero per il Comune',prima:[],dopo:[],note:'',link:'',promesse:['P10']},
+    {id:'R07',area:'2',tipo:'servizio',titolo:'Coworking e co-studying',desc:'Postazioni di lavoro e studio condiviso in biblioteca',localita:'Avigliano',anno:'2023',stato:'concluso',importo:null,fonte:'Comune',impatto:'Spazio gratuito per studenti e lavoratori',prima:[],dopo:[],note:'',link:'',promesse:['P10']},
+    {id:'R08',area:'2',tipo:'servizio',titolo:'Il filo della tradizione',desc:'Corsi per riscoprire l\'arte del ricamo e le tradizioni locali',localita:'Avigliano',anno:'2023',stato:'concluso',importo:null,fonte:'Comune',impatto:'Tradizione artigianale rilanciata',prima:[],dopo:[],note:'',link:'',promesse:['P22']},
+    {id:'R09',area:'2',tipo:'servizio',titolo:'Cineforum comunale',desc:'Sperimentazione del cineforum in biblioteca',localita:'Avigliano',anno:'2023',stato:'concluso',importo:null,fonte:'Comune',impatto:'Nuovo momento culturale e di aggregazione',prima:[],dopo:[],note:'',link:'',promesse:['P03','P12','P13']},
+    {id:'R10',area:'2',tipo:'servizio',titolo:'Festa della Musica e delle Arti',desc:'Ampliamento e consolidamento dell\'evento annuale',localita:'Avigliano',anno:'2024',stato:'concluso',importo:null,fonte:'Comune',impatto:'Evento culturale di riferimento territoriale',prima:[],dopo:[],note:'',link:'',promesse:['P12']},
+    {id:'R11',area:'2',tipo:'servizio',titolo:'Programma 50° Anniversario',desc:'Celebrazioni ufficiali per il cinquantenario del Comune',localita:'Tutto il territorio',anno:'2025',stato:'concluso',importo:null,fonte:'Comune',impatto:'Identità comunitaria rafforzata',prima:[],dopo:[],note:'',link:'',promesse:['P12']},
+    {id:'R12',area:'2',tipo:'opera',titolo:'Segnaletica turistica QR code',desc:'Nuova segnaletica con QR code a Toscolano e Santa Restituta',localita:'Toscolano',anno:'2024',stato:'concluso',importo:null,fonte:'Comune',impatto:'Percorsi turistici digitalizzati',prima:[],dopo:[],note:'',link:'',promesse:['P16']},
+    {id:'R13',area:'2',tipo:'servizio',titolo:'Sito/app promozione territoriale',desc:'Visit Avigliano Umbro — piattaforma digitale turistica',localita:'Tutto il territorio',anno:'2024',stato:'concluso',importo:null,fonte:'Comune',impatto:'Visibilità turistica online del territorio',prima:[],dopo:[],note:'',link:'',promesse:['P16']},
+    {id:'R14',area:'2',tipo:'opera',titolo:'Foresta Fossile – riqualificazione',desc:'Riqualificazione ed efficientamento del Centro di Paleontologia Vegetale',localita:'Dunarobba',anno:'2024',stato:'concluso',importo:null,fonte:'Comune/Regione',impatto:'Sito paleontologico unico valorizzato',prima:[],dopo:[],note:'',link:'',promesse:['P21']},
+    {id:'R15',area:'2',tipo:'azione',titolo:'Grotta Bella – studi CARIT',desc:'Due bandi CARIT vinti per studi e ricerche scientifiche',localita:'Avigliano',anno:'2024',stato:'concluso',importo:null,fonte:'CARIT',impatto:'Base scientifica per futura valorizzazione',prima:[],dopo:[],note:'',link:'',promesse:['P15']},
+    {id:'R16',area:'2',tipo:'servizio',titolo:'Bici in Comune',desc:'Progetto cicloturismo sul territorio (80.000 €)',localita:'Tutto il territorio',anno:'2024',stato:'in_corso',importo:80000,fonte:'Ministero',impatto:'Infrastruttura ciclabile per turismo lento',prima:[],dopo:[],note:'',link:'',promesse:['P17']},
+
+    {id:'R17',area:'3',tipo:'opera',titolo:'Asfalto Via Levi + Via Salvemini',desc:'Asfaltatura completa delle due strade',localita:'Avigliano',anno:'2022',stato:'concluso',importo:null,fonte:'Comune',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P23']},
+    {id:'R18',area:'3',tipo:'opera',titolo:'Strada del Pergolone',desc:'Cementazione della strada',localita:'Avigliano',anno:'2023',stato:'concluso',importo:null,fonte:'Comune',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P23']},
+    {id:'R19',area:'3',tipo:'opera',titolo:'Strada Santa Restituta',desc:'Riqualificazione stradale completa',localita:'Santa Restituta',anno:'2023',stato:'concluso',importo:null,fonte:'Comune',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P23']},
+    {id:'R20',area:'3',tipo:'opera',titolo:'SP37 e SP39 con Provincia',desc:'Riqualificazione strade provinciali',localita:'Sismano',anno:'2024',stato:'concluso',importo:null,fonte:'Provincia',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P24']},
+    {id:'R21',area:'3',tipo:'opera',titolo:'Strada delle Pantane',desc:'Imbrecciatura e miglioramento idraulico',localita:'Avigliano',anno:'2023',stato:'concluso',importo:null,fonte:'Comune',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P23']},
+    {id:'R22',area:'3',tipo:'opera',titolo:'Semaforo pedonale scuole',desc:'Installazione semaforo automatico per sicurezza scolastica',localita:'Avigliano',anno:'2023',stato:'concluso',importo:null,fonte:'Comune',impatto:'Sicurezza stradale bambini',prima:[],dopo:[],note:'',link:'',promesse:['P29']},
+    {id:'R23',area:'3',tipo:'opera',titolo:'14 parcheggi + senso unico',desc:'Nuovi parcheggi in centro storico e riorganizzazione viabilità',localita:'Avigliano',anno:'2023',stato:'concluso',importo:null,fonte:'Comune',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P30']},
+    {id:'R24',area:'3',tipo:'opera',titolo:'Parcheggio Sismano',desc:'Sistemazione parcheggio a servizio del borgo',localita:'Sismano',anno:'2023',stato:'concluso',importo:null,fonte:'Comune',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P30']},
+    {id:'R25',area:'3',tipo:'opera',titolo:'Piazza del Teatro',desc:'Lampioni, aiuole, fontana — riqualificazione completa',localita:'Avigliano',anno:'2024',stato:'concluso',importo:null,fonte:'Comune',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P31']},
+    {id:'R26',area:'3',tipo:'opera',titolo:'Piazza della Comunità + giochi',desc:'Riqualificazione piazza e ampliamento area giochi',localita:'Avigliano',anno:'2024',stato:'concluso',importo:null,fonte:'Comune',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P25','P31']},
+    {id:'R27',area:'3',tipo:'opera',titolo:'Parco Piacenti + bocce',desc:'Nuovi giochi e campo da bocce',localita:'Avigliano',anno:'2024',stato:'concluso',importo:null,fonte:'Comune',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P26']},
+    {id:'R28',area:'3',tipo:'opera',titolo:'Bagno pubblico Sant\'Egidio',desc:'Servizi igienici al Parco di Sant\'Egidio',localita:'Avigliano',anno:'2024',stato:'concluso',importo:null,fonte:'Comune',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P25']},
+    {id:'R29',area:'3',tipo:'opera',titolo:'Loculi Santa Restituta',desc:'Nuovi loculi al cimitero',localita:'Santa Restituta',anno:'2023',stato:'concluso',importo:null,fonte:'Comune',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P33']},
+    {id:'R30',area:'3',tipo:'opera',titolo:'Blocco loculi Avigliano',desc:'Nuovo blocco cimitero capoluogo',localita:'Avigliano',anno:'2024',stato:'concluso',importo:null,fonte:'Comune',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P33']},
+    {id:'R31',area:'3',tipo:'opera',titolo:'Cimitero Sismano',desc:'Riqualificazione completa',localita:'Sismano',anno:'2024',stato:'concluso',importo:null,fonte:'Comune',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P33']},
+    {id:'R32',area:'3',tipo:'opera',titolo:'Panchine turistiche e cestini',desc:'Arredo urbano personalizzato su tutto il territorio',localita:'Tutto il territorio',anno:'2024',stato:'concluso',importo:null,fonte:'Comune',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P31']},
+    {id:'R33',area:'3',tipo:'opera',titolo:'Arredo urbano migliorato',desc:'Interventi diffusi di miglioramento',localita:'Tutto il territorio',anno:'2024',stato:'concluso',importo:null,fonte:'Comune',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P31']},
+
+    {id:'R34',area:'4',tipo:'azione',titolo:'Tariffa puntuale TARIC',desc:'Introdotta tariffa puntuale sui rifiuti',localita:'Tutto il territorio',anno:'2023',stato:'concluso',importo:null,fonte:'Comune',impatto:'Paghi in base a quanto produci',prima:[],dopo:[],note:'',link:'',promesse:['P35']},
+    {id:'R35',area:'4',tipo:'opera',titolo:'Teleriscaldamento completato',desc:'Completamento impianto teleriscaldamento',localita:'Avigliano',anno:'2023',stato:'concluso',importo:null,fonte:'Comune/Regione',impatto:'Riduzione emissioni e costi energetici',prima:[],dopo:[],note:'',link:'',promesse:['P37']},
+    {id:'R36',area:'4',tipo:'opera',titolo:'Efficientamento ex scuole Dunarobba',desc:'Efficientamento energetico edificio',localita:'Dunarobba',anno:'2024',stato:'concluso',importo:null,fonte:'Regione',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P32']},
+    {id:'R37',area:'4',tipo:'opera',titolo:'Più punti luce + rete',desc:'Incremento punti luce e ampliamento rete illuminazione',localita:'Tutto il territorio',anno:'2024',stato:'concluso',importo:null,fonte:'Comune',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P32']},
+    {id:'R38',area:'4',tipo:'opera',titolo:'Illuminazione storica perenne',desc:'Simboli del Comune illuminati stabilmente',localita:'Avigliano',anno:'2024',stato:'concluso',importo:null,fonte:'Comune',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P32']},
+    {id:'R39',area:'4',tipo:'azione',titolo:'Bonus 300€ adozioni + canile',desc:'Incentivi per adozioni e contenimento costi gestione',localita:'Tutto il territorio',anno:'2023',stato:'concluso',importo:null,fonte:'Comune',impatto:'Più adozioni, meno costi canile',prima:[],dopo:[],note:'',link:'',promesse:['P36']},
+    {id:'R40',area:'4',tipo:'azione',titolo:'Cattura randagi',desc:'Interventi sistematici sul territorio',localita:'Tutto il territorio',anno:'2024',stato:'concluso',importo:null,fonte:'Comune',impatto:'Territorio più sicuro',prima:[],dopo:[],note:'',link:'',promesse:['P36']},
+
+    {id:'R41',area:'5',tipo:'servizio',titolo:'Sportello del Cittadino',desc:'Riferimento diretto con gli amministratori',localita:'Avigliano',anno:'2022',stato:'concluso',importo:null,fonte:'Comune',impatto:'Canale diretto cittadino-amministrazione',prima:[],dopo:[],note:'',link:'',promesse:['P38']},
+    {id:'R42',area:'5',tipo:'servizio',titolo:'Chat WhatsApp comunale',desc:'"Il Comune a portata di mano" — canale diretto',localita:'Tutto il territorio',anno:'2022',stato:'concluso',importo:null,fonte:'Comune',impatto:'Comunicazione immediata',prima:[],dopo:[],note:'',link:'',promesse:['P38']},
+    {id:'R43',area:'5',tipo:'azione',titolo:'Registri volontariato civico',desc:'Attivazione registri ufficiali del volontariato',localita:'Avigliano',anno:'2023',stato:'concluso',importo:null,fonte:'Comune',impatto:'Riconoscimento formale volontariato',prima:[],dopo:[],note:'',link:'',promesse:['P08','P45']},
+    {id:'R44',area:'5',tipo:'servizio',titolo:'SUAPE e pratiche edilizie online',desc:'Digitalizzazione completa sportello e pratiche',localita:'Avigliano',anno:'2023',stato:'concluso',importo:null,fonte:'Comune',impatto:'Zero code, tutto online',prima:[],dopo:[],note:'',link:'',promesse:['P42']},
+    {id:'R45',area:'5',tipo:'servizio',titolo:'Nuovo sito web comunale (PNRR)',desc:'Rifacimento completo del sito istituzionale',localita:'Avigliano',anno:'2024',stato:'concluso',importo:null,fonte:'PNRR',impatto:'Comune digitale accessibile',prima:[],dopo:[],note:'',link:'',promesse:['P42']},
+    {id:'R46',area:'5',tipo:'azione',titolo:'Sostegno commercio 28.867€',desc:'Erogazioni + ViviAvigliano + "Regaliamoci Avigliano"',localita:'Avigliano',anno:'2024',stato:'concluso',importo:28867,fonte:'Comune',impatto:'28.867€ iniettati nel commercio locale',prima:[],dopo:[],note:'',link:'',promesse:['P41']},
+    {id:'R47',area:'5',tipo:'opera',titolo:'Impianti sportivi 70.000€',desc:'Ammodernamento con fondi regionali',localita:'Avigliano',anno:'2024',stato:'concluso',importo:70000,fonte:'Regione',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P43']},
+    {id:'R48',area:'5',tipo:'opera',titolo:'Fari campo sportivo',desc:'Riqualificazione illuminazione campo',localita:'Avigliano',anno:'2024',stato:'concluso',importo:null,fonte:'Comune',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P43']},
+    {id:'R49',area:'5',tipo:'azione',titolo:'Polizia Municipale ricostituita',desc:'Ricostituzione del servizio dopo anni di assenza',localita:'Avigliano',anno:'2023',stato:'concluso',importo:null,fonte:'Comune',impatto:'Presidio territoriale ripristinato',prima:[],dopo:[],note:'',link:'',promesse:['P44']},
+    {id:'R50',area:'5',tipo:'opera',titolo:'Ex Cottolengo – acquisizione',desc:'Acquisizione e finanziamento ristrutturazione (477.000€)',localita:'Avigliano',anno:'2025',stato:'in_corso',importo:477000,fonte:'Comune/Bando',impatto:'Struttura storica restituita alla comunità',prima:[],dopo:[],note:'',link:'',promesse:['P27']},
+    {id:'R51',area:'5',tipo:'opera',titolo:'Bando "Via della Pace"',desc:'Vittoria bando riqualificazione urbana',localita:'Avigliano',anno:'2025',stato:'in_corso',importo:null,fonte:'Bando',impatto:'',prima:[],dopo:[],note:'',link:'',promesse:['P23','P31']},
+    {id:'R52',area:'5',tipo:'azione',titolo:'Ingresso Aree Interne',desc:'Il Comune entra nella Strategia Nazionale Aree Interne',localita:'Tutto il territorio',anno:'2024',stato:'concluso',importo:null,fonte:'Stato',impatto:'Accesso a fondi dedicati per territori fragili',prima:[],dopo:[],note:'',link:'',promesse:[]},
+    {id:'R53',area:'2',tipo:'opera',titolo:'Centro Polifunzionale Agorà',desc:'Spazio polivalente per eventi, cultura, aggregazione — in progettazione',localita:'Avigliano',anno:'2025',stato:'in_corso',importo:null,fonte:'Fondi pubblici',impatto:'Spazio che mancava per la comunità',prima:[],dopo:[],note:'',link:'',promesse:['P11']},
+  ];
+
+  let promises = [], projects = [];
+
+  function load() {
+    const s = localStorage.getItem(SK);
+    if (s) {
+      try {
+        const d = JSON.parse(s);
+        promises = d.promises || [...DP];
+        projects = d.projects || [...DR];
+        /* migration: ensure new fields exist */
+        projects.forEach(p => {
+          if (!p.tipo) p.tipo = 'opera';
+          if (!p.impatto) p.impatto = '';
+          if (!p.prima) p.prima = p.primaImg || [];
+          if (!p.dopo) p.dopo = p.dopoImg || [];
+          if (!p.promesse) p.promesse = p.matchPromiseIds || [];
+          delete p.primaImg; delete p.dopoImg; delete p.matchPromiseIds;
+        });
+      } catch(e) { promises = [...DP]; projects = [...DR]; }
+    } else { promises = [...DP]; projects = [...DR]; }
+  }
+
+  function save() { localStorage.setItem(SK, JSON.stringify({ promises, projects })); }
+
+  function match() {
+    const r = { total: 0, covered: 0, byArea: {}, details: [] };
+    Object.keys(AREAS).forEach(a => r.byArea[a] = { total: 0, covered: 0, concluso: 0, in_corso: 0 });
+    promises.forEach(pr => {
+      r.total++;
+      if (r.byArea[pr.area]) r.byArea[pr.area].total++;
+      const linked = projects.filter(p => p.promesse && p.promesse.includes(pr.id));
+      if (linked.length > 0) {
+        r.covered++;
+        if (r.byArea[pr.area]) r.byArea[pr.area].covered++;
+      }
+      linked.forEach(l => {
+        if (r.byArea[pr.area]) {
+          if (l.stato === 'concluso') r.byArea[pr.area].concluso++;
+          else r.byArea[pr.area].in_corso++;
+        }
+      });
+      r.details.push({ promise: pr, results: linked, covered: linked.length > 0 });
+    });
+    return r;
+  }
+
+  function getOpere() { return projects.filter(p => p.tipo === 'opera' && (p.prima?.length > 0 || p.dopo?.length > 0)); }
+  function getWIP() { return projects.filter(p => p.stato === 'in_corso' || p.stato === 'programmato'); }
+
+  load();
+
+  return {
+    AREAS,
+    getPromises: () => promises,
+    getProjects: () => projects,
+    getOpere, getWIP, match,
+    addProject(p) { projects.push(p); save(); },
+    updateProject(id, d) { const i = projects.findIndex(p => p.id === id); if (i >= 0) { projects[i] = { ...projects[i], ...d }; save(); } },
+    deleteProject(id) { projects = projects.filter(p => p.id !== id); save(); },
+    exportJSON() { return JSON.stringify({ promises, projects }, null, 2); },
+    importJSON(j) { try { const d = JSON.parse(j); if (d.promises) promises = d.promises; if (d.projects) projects = d.projects; save(); return true; } catch(e) { return false; } },
+    reset() { promises = [...DP]; projects = [...DR]; save(); },
+    save, load
+  };
+})();
