@@ -1,162 +1,4521 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Avigliano Umbro — Promesso. Fatto.</title>
-<meta name="description" content="Rendiconto trasparente 2021-2027. Promesse mantenute, opere realizzate, numeri verificabili.">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Avigliano Umbro — Promesso. Fatto.</title>
+    <meta
+      name="description"
+      content="Rendiconto trasparente 2021-2027. Promesse mantenute, opere realizzate, numeri verificabili."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <style>
+/* ============================================================
+   Avigliano 2027 — PREMIUM Design System
+   Aesthetic: Dark Institutional Luxury / Annual Report
+   ============================================================ */
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@400;500;600;700&display=swap");
 
-<nav class="nav" id="nav"><div class="nav-inner">
-  <a href="#" class="nav-brand"><span class="nav-brand-name">Avigliano</span><span class="nav-brand-tag">2027</span></a>
-  <div class="nav-links"><a href="#numeri" class="nav-link">Numeri</a><a href="#opere" class="nav-link">Opere</a><a href="#promesse" class="nav-link">Promesse</a><a href="#mappa" class="nav-link">Mappa</a><a href="#cantieri" class="nav-link">Cantieri</a><a href="#domani" class="nav-link">Domani</a><a href="#chi-sono" class="nav-link">Chi sono</a></div>
-  <div style="display:flex;gap:12px;align-items:center"><button id="admin-btn" class="nav-admin">⚙️</button><button id="menu-btn" class="nav-burger">☰</button></div>
-</div></nav>
+:root {
+  --bg: #0a0c10;
+  --bg-2: #12151c;
+  --bg-3: #1a1e28;
+  --bg-card: #14171f;
+  --bg-card-hover: #1c2030;
+  --border: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 255, 255, 0.12);
+  --gold: #c8a55c;
+  --gold-light: #e8d5a0;
+  --cyan: #4ec8e0;
+  --cyan-dim: rgba(78, 200, 224, 0.15);
+  --green: #3ddc84;
+  --amber: #f0a030;
+  --violet: #9d7aff;
+  --rose: #f06088;
+  --text: #e8eaf0;
+  --text-2: #9ea4b4;
+  --text-3: #5c6272;
+  --white: #ffffff;
+  --r: 20px;
+  --r-sm: 12px;
+  --r-xs: 8px;
+}
 
-<div class="mob-menu" id="mob-menu"><button id="mob-close" class="mob-close">✕</button><div class="mob-links"><a href="#numeri" class="mob-link">Numeri</a><a href="#opere" class="mob-link">Opere</a><a href="#promesse" class="mob-link">Promesse</a><a href="#mappa" class="mob-link">Mappa</a><a href="#cantieri" class="mob-link">Cantieri</a><a href="#domani" class="mob-link">Domani</a><a href="#chi-sono" class="mob-link">Chi sono</a></div></div>
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+body {
+  font-family: "DM Sans", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  line-height: 1.65;
+  font-size: 15px;
+}
+img {
+  display: block;
+  max-width: 100%;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Playfair Display", serif;
+  line-height: 1.08;
+  color: var(--white);
+}
 
-<section class="hero" id="hero">
-  <div class="hero-grid"></div>
-  <div class="hero-line" style="top:25%"></div><div class="hero-line" style="top:75%"></div>
-  <div class="hero-content">
-    <p class="hero-pre reveal">Rendiconto 2021 — 2027</p>
-    <h1 class="reveal">Promesso.<br><em>Fatto.</em></h1>
-    <p class="hero-sub reveal">Tutto quello che ci eravamo impegnati a fare. Tutto quello che abbiamo realizzato. Trasparenza con i numeri, non con gli slogan.</p>
-    <div class="hero-cta reveal"><a href="#numeri" class="btn-gold">Scopri i risultati</a><a href="#domani" class="btn-outline">Priorità del domani</a></div>
-    <div class="hero-stat-bar reveal" id="hero-stats"></div>
-  </div>
-  <div class="hero-scroll"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 7l5 5 5-5"/></svg></div>
-</section>
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 2px;
+}
 
-<section id="numeri" class="sect"><div class="wrap">
-  <div class="sect-header reveal"><p class="t-label">Il rendiconto in numeri</p><h2 class="t-title">Dashboard del programma</h2><div class="sect-divider" style="margin-top:20px"></div></div>
-  <div id="kpi-grid" class="grid-kpi reveal"></div>
-  <div class="text-center" style="margin-top:36px"><button id="how-calc-btn" style="background:none;border:none;color:var(--gold);font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.06em;text-transform:uppercase">Come calcoliamo questi numeri →</button></div>
-</div></section>
+/* ---- Layout ---- */
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+.sect {
+  padding: 140px 0;
+  position: relative;
+}
+.sect-header {
+  text-align: center;
+  margin-bottom: 72px;
+}
 
-<section id="opere" class="sect" style="background:var(--bg-2)"><div class="wrap">
-  <div class="sect-header reveal"><p class="t-label">Vedere per credere</p><h2 class="t-title">Prima / Dopo</h2><p class="t-sub">Le trasformazioni sul territorio. Trascina il cursore per confrontare.</p></div>
-  <div id="opere-filters" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:36px" class="reveal"></div>
-  <div id="opere-grid" class="grid-opere reveal"></div>
-  <p id="opere-empty" style="display:none;text-align:center;color:var(--text-3);padding:80px 0;font-size:14px">Le foto verranno caricate dall'admin ⚙️ → Progetti → 📷</p>
-</div></section>
+/* ---- Noise/Grain ---- */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.025'/%3E%3C/svg%3E");
+  opacity: 0.5;
+}
 
-<section id="promesse" class="sect"><div class="wrap">
-  <div class="sect-header reveal"><p class="t-label">Cuore del rendiconto</p><h2 class="t-title">Promesse vs Risultati</h2></div>
-  <div class="reveal" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px;align-items:center">
-    <div style="position:relative;flex:1;min-width:220px"><svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input id="search-input" type="text" class="search-box" placeholder="Cerca promesse o risultati..."></div>
-    <select id="f-loc" class="filter-select"><option value="">Tutte le località</option><option>Avigliano</option><option>Sismano</option><option>Santa Restituta</option><option>Toscolano</option><option>Dunarobba</option><option>Tutto il territorio</option></select>
-    <select id="f-stato" class="filter-select"><option value="">Tutti gli stati</option><option value="concluso">Conclusi</option><option value="in_corso">In corso</option></select>
-    <select id="f-tipo" class="filter-select"><option value="">Tutti i tipi</option><option value="opera">🏗️ Opere</option><option value="servizio">🟢 Servizi</option><option value="azione">📋 Azioni</option></select>
-  </div>
-  <div id="area-tabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px" class="reveal"></div>
-  <div id="promise-list" class="reveal"></div>
-</div></section>
+/* ---- Typography classes ---- */
+.t-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.t-label::before,
+.t-label::after {
+  content: "";
+  width: 24px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.4;
+}
+.t-title {
+  font-size: clamp(2.6rem, 5.5vw, 4rem);
+  margin-top: 16px;
+  letter-spacing: -0.02em;
+}
+.t-sub {
+  color: var(--text-2);
+  margin-top: 16px;
+  font-size: 16px;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.7;
+}
 
-<section id="mappa" class="sect" style="background:var(--bg-2)"><div class="wrap">
-  <div class="sect-header reveal"><p class="t-label">Sul territorio</p><h2 class="t-title">Mappa degli interventi</h2></div>
-  <div id="map-filters" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:20px" class="reveal"></div>
-  <div id="map-container" style="height:480px" class="reveal"></div>
-</div></section>
+/* ---- Animations ---- */
+.reveal {
+  opacity: 0;
+  transform: translateY(50px);
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-16px);
+  }
+}
+@keyframes glow {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+@keyframes line-grow {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
 
-<section id="cantieri" class="sect"><div class="wrap">
-  <div class="sect-header reveal"><p class="t-label">Work in progress</p><h2 class="t-title">Cantieri aperti</h2></div>
-  <div id="wip-grid" class="grid-wip reveal"></div>
-</div></section>
+/* ================================================================
+   NAVIGATION
+   ================================================================ */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(10, 12, 16, 0.6);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border-bottom: 1px solid var(--border);
+  transition: all 0.4s;
+}
+.nav.scrolled {
+  background: rgba(10, 12, 16, 0.92);
+}
+.nav-inner {
+  max-width: 1200px;
+  margin: auto;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+}
+.nav-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.nav-brand-name {
+  font-family: "Playfair Display", serif;
+  font-size: 26px;
+  color: var(--white);
+}
+.nav-brand-tag {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--gold);
+  text-transform: uppercase;
+  border: 1px solid rgba(200, 165, 92, 0.3);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+.nav-links {
+  display: flex;
+  gap: 36px;
+  align-items: center;
+}
+.nav-link {
+  color: var(--text-3);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+  position: relative;
+}
+.nav-link:hover {
+  color: var(--gold);
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--gold);
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav-link:hover::after {
+  width: 100%;
+}
+.nav-admin {
+  background: none;
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  border-radius: var(--r-xs);
+  font-size: 13px;
+  color: var(--text-3);
+  transition: all 0.3s;
+}
+.nav-admin:hover {
+  border-color: var(--border-hover);
+  color: var(--text);
+}
+.nav-burger {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--text);
+  display: none;
+}
 
-<section id="domani" class="sect" style="background:var(--bg-2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)"><div class="wrap" style="max-width:1000px">
-  <div class="sect-header reveal"><p class="t-label">Programma partecipato</p><h2 class="t-title">Le priorità del domani</h2><p class="t-sub">Scegli da 1 a 3 priorità. Il voto è anonimo e locale.</p></div>
-  <div id="vote-grid" class="grid-vote reveal"></div>
-  <div class="text-center" style="margin-top:32px"><button id="vote-results-btn" style="background:none;border:none;color:var(--gold);font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.06em;text-transform:uppercase">Vedi risultati parziali →</button></div>
-  <div id="vote-results" style="display:none;max-width:500px;margin:32px auto 0"></div>
-</div></section>
+/* ================================================================
+   HERO
+   ================================================================ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(
+      ellipse 80% 60% at 50% 40%,
+      rgba(200, 165, 92, 0.06) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 80% 20%,
+      rgba(78, 200, 224, 0.04) 0%,
+      transparent 50%
+    ),
+    var(--bg);
+}
+.hero-line {
+  position: absolute;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.08;
+  width: 100%;
+}
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.015) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 50% 50% at center, black, transparent);
+}
+.hero-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 0 32px;
+  max-width: 1000px;
+}
+.hero-pre {
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+.hero-pre::before,
+.hero-pre::after {
+  content: "";
+  width: 40px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.4;
+}
+.hero h1 {
+  font-size: clamp(3.5rem, 11vw, 8rem);
+  color: var(--white);
+  line-height: 0.9;
+  margin-bottom: 32px;
+  letter-spacing: -0.03em;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--gold);
+}
+.hero-sub {
+  color: var(--text-2);
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  max-width: 520px;
+  margin: 0 auto 48px;
+  line-height: 1.85;
+}
+.hero-cta {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold), #b8943f);
+  color: #1a1400;
+  padding: 18px 44px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.03em;
+  box-shadow:
+    0 4px 30px rgba(200, 165, 92, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
+  display: inline-block;
+  border: none;
+}
+.btn-gold:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 40px rgba(200, 165, 92, 0.35);
+}
+.btn-outline {
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-2);
+  padding: 18px 44px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s;
+  display: inline-block;
+  background: none;
+}
+.btn-outline:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.hero-scroll {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--text-3);
+  animation: float 3s ease-in-out infinite;
+}
+.hero-stat-bar {
+  display: flex;
+  justify-content: center;
+  gap: 64px;
+  margin-top: 72px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+}
+.hero-stat-num {
+  font-family: "Playfair Display", serif;
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1;
+}
+.hero-stat-label {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
 
-<section id="chi-sono" class="sect"><div class="wrap" style="max-width:800px">
-  <div class="sect-header reveal"><p class="t-label">Il percorso</p><h2 class="t-title">Daniele Marcelli</h2></div>
-  <div class="reveal" style="display:flex;gap:56px;align-items:flex-start;flex-wrap:wrap">
-    <div style="flex:1;min-width:280px">
-      <p style="color:var(--text-2);line-height:1.85;font-size:15px;margin-bottom:40px">Vicesindaco di Avigliano Umbro dal 2021. Collaboratore regionale. Impegnato nello sviluppo del territorio, nella trasparenza amministrativa e nella valorizzazione delle risorse locali.</p>
-      <div class="timeline">
-        <div class="timeline-item"><div class="timeline-dot" style="background:var(--gold)"></div><p style="font-weight:700;color:var(--white)">Consigliere Comunale</p><p style="font-size:13px;color:var(--text-3);margin-top:4px">Primo impegno istituzionale</p></div>
-        <div class="timeline-item"><div class="timeline-dot" style="background:var(--gold)"></div><p style="font-weight:700;color:var(--white)">Vice Sindaco (2021 — oggi)</p><p style="font-size:13px;color:var(--text-3);margin-top:4px">Gestione operativa, fondi, opere</p></div>
-        <div class="timeline-item"><div class="timeline-dot" style="background:var(--cyan)"></div><p style="font-weight:700;color:var(--white)">Candidato 2027</p><p style="font-size:13px;color:var(--text-3);margin-top:4px">Continuità e nuove sfide</p></div>
+/* ================================================================
+   KPI SECTION
+   ================================================================ */
+.grid-kpi {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+.kpi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 36px 28px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+.kpi-card::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--cyan));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.kpi-card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-hover);
+  transform: translateY(-8px);
+}
+.kpi-card:hover::after {
+  opacity: 1;
+}
+.kpi-featured {
+  grid-column: span 2;
+}
+.kpi-num {
+  font-family: "Playfair Display", serif;
+  font-size: 3.2rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--white);
+}
+.kpi-num-sub {
+  font-size: 0.9rem;
+  color: var(--text-3);
+  font-family: "DM Sans", sans-serif;
+  font-weight: 500;
+}
+.kpi-label {
+  font-size: 13px;
+  color: var(--text-3);
+  margin-top: 12px;
+  font-weight: 500;
+}
+.prog-bg {
+  fill: none;
+  stroke: var(--bg-3);
+  stroke-width: 6;
+}
+.prog-bar {
+  fill: none;
+  stroke: url(#progGrad);
+  stroke-linecap: round;
+  stroke-width: 6;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dashoffset 2.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ================================================================
+   PILLS / FILTERS
+   ================================================================ */
+.pill {
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-3);
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+.pill:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.pill.active {
+  background: var(--gold);
+  color: var(--bg);
+  border-color: var(--gold);
+}
+.search-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 14px 18px 14px 48px;
+  width: 100%;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.3s;
+}
+.search-box:focus {
+  border-color: var(--gold);
+}
+.search-box::placeholder {
+  color: var(--text-3);
+}
+.search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-3);
+}
+.filter-select {
+  padding: 14px 40px 14px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg-card);
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  font-family: inherit;
+  cursor: pointer;
+  min-width: 140px;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%235C6272' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+
+/* ================================================================
+   PROMISE CARDS
+   ================================================================ */
+.promise-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  transition: all 0.35s;
+  margin-bottom: 10px;
+}
+.promise-card:hover {
+  border-color: var(--border-hover);
+}
+.promise-header {
+  padding: 24px 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.promise-icon {
+  font-size: 24px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.promise-meta {
+  flex: 1;
+  min-width: 0;
+}
+.promise-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.promise-tema {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--white);
+}
+.promise-text {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.6;
+  margin-top: 4px;
+}
+.promise-arrow {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-top: 5px;
+  color: var(--text-3);
+  transition: transform 0.3s;
+}
+.promise-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.promise-body.open {
+  max-height: 3000px;
+}
+.promise-body-inner {
+  padding: 0 28px 24px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Result cards */
+.result-card {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 20px 24px;
+  transition: border-color 0.3s;
+}
+.result-card:hover {
+  border-color: var(--border-hover);
+}
+.result-card.tipo-opera {
+  border-left: 3px solid var(--violet);
+}
+.result-card.tipo-servizio {
+  border-left: 3px solid var(--green);
+}
+.result-card.tipo-azione {
+  border-left: 3px solid var(--amber);
+}
+.result-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--white);
+}
+.result-desc {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.55;
+  margin-top: 6px;
+}
+.result-impact {
+  font-size: 12px;
+  color: var(--gold);
+  margin-top: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.result-impact::before {
+  content: "→";
+}
+.result-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.badge-concluso {
+  background: rgba(61, 220, 132, 0.1);
+  color: var(--green);
+  border: 1px solid rgba(61, 220, 132, 0.15);
+}
+.badge-in_corso {
+  background: rgba(240, 160, 48, 0.1);
+  color: var(--amber);
+  border: 1px solid rgba(240, 160, 48, 0.15);
+}
+.badge-programmato {
+  background: rgba(157, 122, 255, 0.1);
+  color: var(--violet);
+  border: 1px solid rgba(157, 122, 255, 0.15);
+}
+.badge-opera {
+  background: rgba(157, 122, 255, 0.1);
+  color: var(--violet);
+}
+.badge-servizio {
+  background: rgba(61, 220, 132, 0.1);
+  color: var(--green);
+}
+.badge-azione {
+  background: rgba(240, 160, 48, 0.1);
+  color: var(--amber);
+}
+.badge-area {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+/* ================================================================
+   OPERA CARDS (Prima/Dopo)
+   ================================================================ */
+.grid-opere {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 24px;
+}
+.opera-card {
+  background: var(--bg-card);
+  border-radius: var(--r);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  transition:
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.5s,
+    border-color 0.5s;
+}
+.opera-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+  border-color: var(--border-hover);
+}
+.opera-body {
+  padding: 24px 28px;
+}
+.opera-title {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 6px;
+  color: var(--white);
+}
+.opera-desc {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.55;
+}
+.opera-note {
+  font-size: 12px;
+  color: var(--gold);
+  margin-top: 10px;
+  font-style: italic;
+}
+.opera-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.ba-slider {
+  position: relative;
+  overflow: hidden;
+  cursor: col-resize;
+  touch-action: none;
+  aspect-ratio: 16/10;
+}
+.ba-slider .ba-after {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.ba-slider .ba-before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+}
+.ba-slider .ba-before img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: auto;
+  min-width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ba-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--gold);
+  box-shadow: 0 0 20px rgba(200, 165, 92, 0.4);
+  cursor: col-resize;
+  z-index: 10;
+}
+.ba-handle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--gold);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23C8A55C' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M18 8l4 4-4 4'/%3E%3Cpath d='M6 8l-4 4 4 4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px;
+}
+.ba-label {
+  position: absolute;
+  top: 16px;
+  z-index: 20;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 999px;
+}
+.ba-label-prima {
+  left: 16px;
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--text-2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.ba-label-dopo {
+  right: 16px;
+  background: rgba(200, 165, 92, 0.85);
+  color: var(--bg);
+}
+.opera-placeholder {
+  aspect-ratio: 16/10;
+  background: var(--bg-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+/* ================================================================
+   MAP
+   ================================================================ */
+#map-container {
+  border-radius: var(--r);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+#map-container .leaflet-popup-content-wrapper {
+  border-radius: var(--r-sm);
+  font-family: "DM Sans", sans-serif;
+}
+
+/* ================================================================
+   WIP CARDS
+   ================================================================ */
+.grid-wip {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+}
+.wip-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 32px 28px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s;
+}
+.wip-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-4px);
+}
+.wip-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+}
+.wip-1::before {
+  background: var(--rose);
+}
+.wip-2::before {
+  background: var(--amber);
+}
+.wip-3::before {
+  background: var(--violet);
+}
+.wip-4::before {
+  background: var(--green);
+}
+.wip-5::before {
+  background: var(--cyan);
+}
+.wip-title {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 700;
+  font-size: 17px;
+  margin-bottom: 8px;
+  color: var(--white);
+}
+.wip-desc {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+.wip-impact {
+  font-size: 12px;
+  color: var(--gold);
+  margin-top: 12px;
+  font-weight: 700;
+}
+.wip-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+/* ================================================================
+   VOTE SECTION
+   ================================================================ */
+.grid-vote {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+.vote-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 32px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.vote-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(200, 165, 92, 0.3);
+  background: rgba(200, 165, 92, 0.03);
+}
+.vote-card.selected {
+  border-color: var(--gold);
+  background: rgba(200, 165, 92, 0.06);
+  box-shadow: 0 0 60px rgba(200, 165, 92, 0.08);
+}
+.vote-icon {
+  font-size: 32px;
+}
+.vote-title {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--white);
+  margin-top: 16px;
+}
+.vote-desc {
+  font-size: 13px;
+  color: var(--text-3);
+  margin-top: 6px;
+}
+
+/* ================================================================
+   TIMELINE
+   ================================================================ */
+.timeline {
+  position: relative;
+  padding-left: 36px;
+  border-left: 1px solid rgba(200, 165, 92, 0.2);
+}
+.timeline-item {
+  margin-bottom: 36px;
+  position: relative;
+}
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+.timeline-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  position: absolute;
+  left: -42px;
+  border: 3px solid var(--bg);
+}
+
+/* ================================================================
+   FAQ
+   ================================================================ */
+.faq-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+}
+.faq-btn {
+  width: 100%;
+  text-align: left;
+  padding: 20px 24px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--white);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: none;
+  font-family: inherit;
+}
+.faq-icon {
+  color: var(--gold);
+  font-size: 18px;
+}
+
+/* ================================================================
+   LIGHTBOX
+   ================================================================ */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.96);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.lightbox.open {
+  display: flex;
+}
+.lightbox img {
+  max-width: 92vw;
+  max-height: 92vh;
+  border-radius: var(--r-sm);
+}
+.lightbox-close {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  background: none;
+  border: none;
+  color: var(--text-3);
+  font-size: 32px;
+  cursor: pointer;
+}
+
+/* ================================================================
+   ADMIN
+   ================================================================ */
+.admin-panel {
+  position: fixed;
+  right: -560px;
+  top: 0;
+  bottom: 0;
+  width: 540px;
+  max-width: 100vw;
+  background: var(--bg-2);
+  z-index: 10001;
+  box-shadow: -20px 0 80px rgba(0, 0, 0, 0.4);
+  transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+  border-left: 1px solid var(--border);
+}
+.admin-panel.open {
+  right: 0;
+}
+.admin-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+.admin-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.admin-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-xs);
+  font-size: 13px;
+  outline: none;
+  font-family: inherit;
+  background: var(--bg-card);
+  color: var(--text);
+  transition: border-color 0.3s;
+}
+.admin-input:focus {
+  border-color: var(--gold);
+}
+.admin-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-2);
+  display: block;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.admin-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  border-radius: var(--r-sm);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.3s;
+}
+.admin-btn:hover {
+  background: var(--gold-light);
+}
+
+/* ================================================================
+   MOBILE MENU
+   ================================================================ */
+.mob-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 320px;
+  background: var(--bg-2);
+  z-index: 1001;
+  border-left: 1px solid var(--border);
+  transform: translateX(100%);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 32px;
+}
+.mob-menu.open {
+  transform: translateX(0);
+}
+.mob-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-2);
+}
+.mob-links {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  margin-top: 64px;
+}
+.mob-link {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.mob-link:hover {
+  color: var(--gold);
+}
+
+/* ================================================================
+   FOOTER
+   ================================================================ */
+.footer {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  color: var(--text-3);
+  padding: 56px 0;
+}
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 28px;
+}
+.footer-brand {
+  font-family: "Playfair Display", serif;
+  font-size: 24px;
+  color: var(--white);
+}
+.footer-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  margin-left: 10px;
+}
+
+/* ================================================================
+   SECTION DIVIDER
+   ================================================================ */
+.sect-divider {
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold), var(--cyan));
+  margin: 0 auto 0;
+  opacity: 0.5;
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none !important;
+  }
+  .nav-burger {
+    display: block !important;
+  }
+  #map-container {
+    height: 300px !important;
+  }
+  .kpi-featured {
+    grid-column: span 1;
+  }
+  .grid-kpi {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .grid-opere,
+  .grid-wip {
+    grid-template-columns: 1fr;
+  }
+  .sect {
+    padding: 80px 0;
+  }
+  .hero h1 {
+    font-size: clamp(2.8rem, 12vw, 4rem) !important;
+  }
+  .wrap {
+    padding: 0 20px;
+  }
+  .hero-stat-bar {
+    flex-direction: column;
+    gap: 28px;
+    align-items: center;
+  }
+  .hero-stat-bar .hero-stat-num {
+    font-size: 2.4rem;
+  }
+}
+.text-center {
+  text-align: center;
+}
+
+
+/* === PREMIUM OVERRIDES 2027 === */
+:root{--glow-gold:rgba(200,165,92,.35);--glow-cyan:rgba(78,200,224,.28)}
+body{background:radial-gradient(1200px 600px at 80% -10%,rgba(78,200,224,.06),transparent 60%),radial-gradient(1000px 800px at -10% 0%,rgba(200,165,92,.08),transparent 65%),var(--bg)}
+.sect{position:relative;overflow:hidden}
+.sect::before{content:"";position:absolute;left:50%;top:0;transform:translateX(-50%);width:min(1120px,88vw);height:1px;background:linear-gradient(90deg,transparent,rgba(200,165,92,.45),rgba(78,200,224,.45),transparent)}
+.t-label{display:flex;align-items:center;justify-content:center;gap:12px;letter-spacing:.14em}
+.t-label::before,.t-label::after{content:"";width:42px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.hero{min-height:100vh;background:radial-gradient(90% 75% at 20% 15%,rgba(78,200,224,.11),transparent 62%),radial-gradient(70% 60% at 85% 35%,rgba(200,165,92,.14),transparent 60%),linear-gradient(180deg,#080a0f,#0a0c10 55%,#0c0f15);position:relative}
+.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 76px,rgba(255,255,255,.025) 76px 77px);mix-blend-mode:soft-light;pointer-events:none}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 120%,rgba(200,165,92,.13),transparent 42%);pointer-events:none}
+.hero-content{max-width:1120px}
+.hero h1{font-size:clamp(3.4rem,11vw,9rem);line-height:.92;letter-spacing:-.03em;text-shadow:0 18px 55px rgba(0,0,0,.65)}
+.hero h1 em{color:var(--gold-light);font-style:italic;text-shadow:0 0 18px rgba(200,165,92,.35),0 0 36px rgba(200,165,92,.22);position:relative}
+.hero h1 em::after{content:"";position:absolute;left:-8%;right:-8%;bottom:8%;height:16px;background:linear-gradient(90deg,transparent,rgba(200,165,92,.28),transparent);filter:blur(10px)}
+.hero-stat-bar{backdrop-filter:blur(8px);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.12);box-shadow:0 24px 40px rgba(0,0,0,.35),inset 0 1px rgba(255,255,255,.09)}
+.hero-stat-num{font-size:clamp(2rem,4vw,3.6rem);font-weight:900;line-height:1;letter-spacing:-.02em}
+.grid-kpi{gap:20px}
+.kpi-card{position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.09);background:linear-gradient(165deg,rgba(255,255,255,.035),rgba(255,255,255,.015) 45%,rgba(255,255,255,.01));box-shadow:inset 0 1px rgba(255,255,255,.07),0 12px 30px rgba(0,0,0,.26);transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s,border-color .35s}
+.kpi-card::before{content:"";position:absolute;inset:-1px;background:linear-gradient(130deg,rgba(200,165,92,.25),transparent 34%,transparent 66%,rgba(78,200,224,.2));opacity:0;transition:opacity .35s;pointer-events:none}
+.kpi-card:hover{transform:translateY(-6px) scale(1.01);border-color:rgba(200,165,92,.35);box-shadow:0 24px 40px rgba(0,0,0,.36),0 0 0 1px rgba(200,165,92,.12) inset}
+.kpi-card:hover::before{opacity:1}
+.kpi-num{font-size:clamp(2rem,4vw,3rem);font-weight:900;letter-spacing:-.02em}
+.promise-card,.opera-card,.wip-card,.vote-card,.faq-item{border:1px solid rgba(255,255,255,.085);box-shadow:inset 0 1px rgba(255,255,255,.05),0 12px 28px rgba(0,0,0,.22);transition:all .3s ease}
+.promise-card:hover,.opera-card:hover,.wip-card:hover,.vote-card:hover,.faq-item:hover{border-color:rgba(200,165,92,.32);box-shadow:0 20px 36px rgba(0,0,0,.3),0 0 0 1px rgba(200,165,92,.12) inset}
+.result-item{border-left-width:4px!important}
+.result-item .result-title{font-size:1.02rem;font-weight:800}
+.result-impact{font-size:.95rem;background:rgba(78,200,224,.08);border:1px solid rgba(78,200,224,.22)}
+.ba-handle{background:linear-gradient(180deg,#f2dfb3,#c8a55c)!important;border:2px solid rgba(255,255,255,.65)!important;box-shadow:0 0 0 8px rgba(200,165,92,.16),0 8px 24px rgba(0,0,0,.35)!important}
+.ba-tag{letter-spacing:.12em;font-weight:800;background:rgba(10,12,16,.72)!important;border:1px solid rgba(255,255,255,.2)}
+.pill{border-color:rgba(255,255,255,.14);transition:all .25s ease}
+.pill:hover{box-shadow:0 0 0 1px rgba(200,165,92,.35) inset,0 0 18px rgba(200,165,92,.18)}
+.pill.active{box-shadow:0 0 0 1px rgba(200,165,92,.4) inset,0 0 16px rgba(200,165,92,.2)}
+#map-container{border:1px solid rgba(255,255,255,.12);box-shadow:0 20px 38px rgba(0,0,0,.3)}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#11151d;color:#e7ebf2;border:1px solid rgba(255,255,255,.14)}
+.nav{backdrop-filter:blur(12px)}
+.mob-menu{inset:0;width:100%;transform:translateY(-100%);background:radial-gradient(90% 70% at 20% 0,rgba(200,165,92,.14),transparent 60%),#0a0c10}
+.mob-menu.open{transform:translateY(0)}
+.footer{border-top:1px solid rgba(200,165,92,.35)}
+@media (max-width:900px){.hero{padding-top:90px}.hero h1{font-size:clamp(2.8rem,18vw,4.8rem)}.hero-stat-bar{grid-template-columns:1fr;gap:18px}.t-label::before,.t-label::after{width:24px}}
+
+</style>
+  </head>
+  <body>
+    <nav class="nav" id="nav">
+      <div class="nav-inner">
+        <a href="#" class="nav-brand"
+          ><span class="nav-brand-name">Avigliano</span
+          ><span class="nav-brand-tag">2027</span></a
+        >
+        <div class="nav-links">
+          <a href="#numeri" class="nav-link">Numeri</a
+          ><a href="#opere" class="nav-link">Opere</a
+          ><a href="#promesse" class="nav-link">Promesse</a
+          ><a href="#mappa" class="nav-link">Mappa</a
+          ><a href="#cantieri" class="nav-link">Cantieri</a
+          ><a href="#domani" class="nav-link">Domani</a
+          ><a href="#chi-sono" class="nav-link">Chi sono</a>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center">
+          <button id="admin-btn" class="nav-admin">⚙️</button
+          ><button id="menu-btn" class="nav-burger">☰</button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="mob-menu" id="mob-menu">
+      <button id="mob-close" class="mob-close">✕</button>
+      <div class="mob-links">
+        <a href="#numeri" class="mob-link">Numeri</a
+        ><a href="#opere" class="mob-link">Opere</a
+        ><a href="#promesse" class="mob-link">Promesse</a
+        ><a href="#mappa" class="mob-link">Mappa</a
+        ><a href="#cantieri" class="mob-link">Cantieri</a
+        ><a href="#domani" class="mob-link">Domani</a
+        ><a href="#chi-sono" class="mob-link">Chi sono</a>
       </div>
     </div>
-    <div style="width:240px;height:320px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--r);display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:13px;flex-shrink:0">Foto profilo</div>
-  </div>
-</div></section>
 
-<section id="faq" class="sect" style="padding:80px 0;background:var(--bg-2)"><div class="wrap" style="max-width:680px">
-  <div class="sect-header reveal"><p class="t-label">Domande frequenti</p><h2 class="t-title">FAQ</h2></div>
-  <div class="reveal" id="faq-list" style="display:flex;flex-direction:column;gap:10px"></div>
-  <div class="reveal text-center" style="margin-top:64px">
-    <h3 style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--white);margin-bottom:16px">Contatti</h3>
-    <p style="color:var(--text-3);font-size:15px;margin-bottom:28px">Scrivi, segnala, proponi.</p>
-    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap"><a href="mailto:info@aviglianoumbro2027.it" class="btn-gold" style="padding:14px 32px;font-size:13px">Email</a><a href="#" class="btn-outline" style="padding:14px 32px;font-size:13px">WhatsApp</a></div>
-  </div>
-</div></section>
-
-<footer class="footer"><div class="wrap footer-inner">
-  <div><span class="footer-brand">Avigliano</span><span class="footer-tag">2027</span><p style="font-size:12px;margin-top:6px">Rendiconto trasparente 2021–2027</p></div>
-  <div style="font-size:12px;text-align:right"><p>"Avigliano – prima di tutto"</p><p style="margin-top:4px">Aggiornamento: febbraio 2026</p></div>
-</div></footer>
-
-<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><button class="lightbox-close">✕</button><img id="lightbox-img" src="" alt=""></div>
-<div id="modal-calc" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9000;display:none;align-items:center;justify-content:center;padding:24px"><div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r);max-width:480px;width:100%;padding:36px;position:relative"><button onclick="document.getElementById('modal-calc').style.display='none'" style="position:absolute;top:14px;right:18px;background:none;border:none;font-size:24px;cursor:pointer;color:var(--text-3)">✕</button><h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--white);margin-bottom:16px">Come calcoliamo</h3><p style="font-size:14px;color:var(--text-2);line-height:1.75">Ogni promessa del programma 2021 è codificata e abbinata ai risultati. Una promessa è "coperta" quando ha almeno un progetto collegato. Gli importi si riferiscono ai dati verificabili.</p></div></div>
-
-<div class="admin-overlay" id="admin-overlay"></div>
-<div class="admin-panel" id="admin-panel"><div style="padding:36px">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px"><h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--white)">Admin</h3><button id="close-admin" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--text-3)">✕</button></div>
-  <div id="admin-login"><label class="admin-label">Password</label><input id="admin-pw" type="password" class="admin-input" style="margin-bottom:14px" placeholder="Password"><button id="admin-login-btn" class="admin-btn">Accedi</button></div>
-  <div id="admin-main" style="display:none">
-    <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap" id="admin-tabs"><button class="pill active" data-tab="a-projects">Progetti</button><button class="pill" data-tab="a-promises">Promesse</button><button class="pill" data-tab="a-data">Import/Export</button></div>
-    <div id="a-projects"><button id="add-proj-btn" class="admin-btn" style="margin-bottom:16px">+ Nuovo Progetto</button><div style="margin-bottom:14px"><input id="admin-search" class="admin-input" placeholder="Cerca nei progetti..."></div><div id="admin-proj-list" style="max-height:50vh;overflow-y:auto;display:flex;flex-direction:column;gap:8px"></div></div>
-    <div id="a-promises" style="display:none"><p style="font-size:13px;color:var(--text-3);margin-bottom:14px">Promesse dal programma elettorale.</p><div id="admin-prom-list" style="max-height:55vh;overflow-y:auto;display:flex;flex-direction:column;gap:8px"></div></div>
-    <div id="a-data" style="display:none"><div style="display:flex;flex-direction:column;gap:12px"><button id="export-btn" class="admin-btn" style="background:var(--bg-card);color:var(--text);border:1px solid var(--border)">📥 Esporta JSON</button><label class="admin-btn" style="background:var(--bg-card);color:var(--text);border:1px solid var(--border);text-align:center;cursor:pointer;display:block">📤 Importa JSON<input type="file" id="import-input" accept=".json" style="display:none"></label><button id="reset-btn" class="admin-btn" style="background:rgba(240,96,136,.08);color:var(--rose);border:1px solid rgba(240,96,136,.2)">🗑 Reset</button></div></div>
-  </div>
-</div></div>
-
-<div id="proj-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:10002;display:none;align-items:center;justify-content:center;padding:16px"><div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r);max-width:520px;width:100%;max-height:90vh;overflow-y:auto;padding:32px;position:relative">
-  <button class="close-proj" style="position:absolute;top:14px;right:18px;background:none;border:none;font-size:24px;cursor:pointer;color:var(--text-3)">✕</button>
-  <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;color:var(--white);margin-bottom:20px" id="proj-modal-title">Nuovo Progetto</h3>
-  <form id="proj-form" style="display:flex;flex-direction:column;gap:12px">
-    <input type="hidden" id="pf-id">
-    <div><label class="admin-label">Titolo*</label><input id="pf-titolo" class="admin-input" required></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <div><label class="admin-label">Area</label><select id="pf-area" class="admin-input"><option value="1">1–Sociale</option><option value="2">2–Cultura</option><option value="3">3–Opere</option><option value="4">4–Ambiente</option><option value="5">5–Servizi</option></select></div>
-      <div><label class="admin-label">Tipo</label><select id="pf-tipo" class="admin-input"><option value="opera">🏗️ Opera</option><option value="servizio">🟢 Servizio</option><option value="azione">📋 Azione</option></select></div>
-    </div>
-    <div><label class="admin-label">Descrizione</label><textarea id="pf-desc" rows="2" class="admin-input" style="resize:vertical"></textarea></div>
-    <div><label class="admin-label">Impatto</label><input id="pf-impatto" class="admin-input" placeholder="Es: 28.867€ nel commercio locale"></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <div><label class="admin-label">Località</label><select id="pf-loc" class="admin-input"><option>Avigliano</option><option>Sismano</option><option>Santa Restituta</option><option>Toscolano</option><option>Dunarobba</option><option>Tutto il territorio</option></select></div>
-      <div><label class="admin-label">Anno</label><input id="pf-anno" class="admin-input" placeholder="2024"></div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <div><label class="admin-label">Stato</label><select id="pf-stato" class="admin-input"><option value="concluso">Concluso</option><option value="in_corso">In corso</option><option value="programmato">Programmato</option></select></div>
-      <div><label class="admin-label">Importo €</label><input id="pf-importo" type="number" class="admin-input"></div>
-    </div>
-    <div><label class="admin-label">Fonte</label><input id="pf-fonte" class="admin-input" placeholder="Comune / Regione / PNRR..."></div>
-    <div><label class="admin-label">Promesse collegate</label><input id="pf-prom" class="admin-input" placeholder="P01,P02"></div>
-    <div><label class="admin-label">Link atto</label><input id="pf-link" class="admin-input"></div>
-    <div id="pf-photo-section">
-      <p style="font-size:12px;font-weight:700;color:var(--text-2);margin:10px 0 8px;text-transform:uppercase;letter-spacing:.06em">📷 Foto prima/dopo</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div><label style="font-size:11px;font-weight:600;color:var(--text-3)">Foto PRIMA</label><input type="file" id="pf-prima" accept="image/*" multiple style="font-size:12px;margin-top:6px;color:var(--text-2)"><div id="pf-prima-prev" style="display:flex;gap:4px;flex-wrap:wrap;margin-top:8px"></div></div>
-        <div><label style="font-size:11px;font-weight:600;color:var(--green)">Foto DOPO</label><input type="file" id="pf-dopo" accept="image/*" multiple style="font-size:12px;margin-top:6px;color:var(--text-2)"><div id="pf-dopo-prev" style="display:flex;gap:4px;flex-wrap:wrap;margin-top:8px"></div></div>
+    <section class="hero" id="hero">
+      <div class="hero-grid"></div>
+      <div class="hero-line" style="top: 25%"></div>
+      <div class="hero-line" style="top: 75%"></div>
+      <div class="hero-content">
+        <p class="hero-pre reveal">Rendiconto 2021 — 2027</p>
+        <h1 class="reveal">Promesso.<br /><em>Fatto.</em></h1>
+        <p class="hero-sub reveal">
+          Tutto quello che ci eravamo impegnati a fare. Tutto quello che abbiamo
+          realizzato. Trasparenza con i numeri, non con gli slogan.
+        </p>
+        <div class="hero-cta reveal">
+          <a href="#numeri" class="btn-gold">Scopri i risultati</a
+          ><a href="#domani" class="btn-outline">Priorità del domani</a>
+        </div>
+        <div class="hero-stat-bar reveal" id="hero-stats"></div>
       </div>
-      <div style="margin-top:10px"><label class="admin-label">Note confronto</label><input id="pf-note" class="admin-input" placeholder="Es: rifatta pavimentazione"></div>
-    </div>
-    <button type="submit" class="admin-btn" style="margin-top:10px">💾 Salva progetto</button>
-  </form>
-</div></div>
+      <div class="hero-scroll">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M7 13l5 5 5-5M7 7l5 5 5-5" />
+        </svg>
+      </div>
+    </section>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="js/data.js"></script>
-<script src="js/app.js"></script>
-</body></html>
+    <section id="numeri" class="sect">
+      <div class="wrap">
+        <div class="sect-header reveal">
+          <p class="t-label">Il rendiconto in numeri</p>
+          <h2 class="t-title">Dashboard del programma</h2>
+          <div class="sect-divider" style="margin-top: 20px"></div>
+        </div>
+        <div id="kpi-grid" class="grid-kpi reveal"></div>
+        <div class="text-center" style="margin-top: 36px">
+          <button
+            id="how-calc-btn"
+            style="
+              background: none;
+              border: none;
+              color: var(--gold);
+              font-size: 12px;
+              font-weight: 600;
+              cursor: pointer;
+              letter-spacing: 0.06em;
+              text-transform: uppercase;
+            "
+          >
+            Come calcoliamo questi numeri →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="opere" class="sect" style="background: var(--bg-2)">
+      <div class="wrap">
+        <div class="sect-header reveal">
+          <p class="t-label">Vedere per credere</p>
+          <h2 class="t-title">Prima / Dopo</h2>
+          <p class="t-sub">
+            Le trasformazioni sul territorio. Trascina il cursore per
+            confrontare.
+          </p>
+        </div>
+        <div
+          id="opere-filters"
+          style="
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 36px;
+          "
+          class="reveal"
+        ></div>
+        <div id="opere-grid" class="grid-opere reveal"></div>
+        <p
+          id="opere-empty"
+          style="
+            display: none;
+            text-align: center;
+            color: var(--text-3);
+            padding: 80px 0;
+            font-size: 14px;
+          "
+        >
+          Le foto verranno caricate dall'admin ⚙️ → Progetti → 📷
+        </p>
+      </div>
+    </section>
+
+    <section id="promesse" class="sect">
+      <div class="wrap">
+        <div class="sect-header reveal">
+          <p class="t-label">Cuore del rendiconto</p>
+          <h2 class="t-title">Promesse vs Risultati</h2>
+        </div>
+        <div
+          class="reveal"
+          style="
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            align-items: center;
+          "
+        >
+          <div style="position: relative; flex: 1; min-width: 220px">
+            <svg
+              class="search-icon"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" /></svg
+            ><input
+              id="search-input"
+              type="text"
+              class="search-box"
+              placeholder="Cerca promesse o risultati..."
+            />
+          </div>
+          <select id="f-loc" class="filter-select">
+            <option value="">Tutte le località</option>
+            <option>Avigliano</option>
+            <option>Sismano</option>
+            <option>Santa Restituta</option>
+            <option>Toscolano</option>
+            <option>Dunarobba</option>
+            <option>Tutto il territorio</option>
+          </select>
+          <select id="f-stato" class="filter-select">
+            <option value="">Tutti gli stati</option>
+            <option value="concluso">Conclusi</option>
+            <option value="in_corso">In corso</option>
+          </select>
+          <select id="f-tipo" class="filter-select">
+            <option value="">Tutti i tipi</option>
+            <option value="opera">🏗️ Opere</option>
+            <option value="servizio">🟢 Servizi</option>
+            <option value="azione">📋 Azioni</option>
+          </select>
+        </div>
+        <div
+          id="area-tabs"
+          style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px"
+          class="reveal"
+        ></div>
+        <div id="promise-list" class="reveal"></div>
+      </div>
+    </section>
+
+    <section id="mappa" class="sect" style="background: var(--bg-2)">
+      <div class="wrap">
+        <div class="sect-header reveal">
+          <p class="t-label">Sul territorio</p>
+          <h2 class="t-title">Mappa degli interventi</h2>
+        </div>
+        <div
+          id="map-filters"
+          style="
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+          "
+          class="reveal"
+        ></div>
+        <div id="map-container" style="height: 480px" class="reveal"></div>
+      </div>
+    </section>
+
+    <section id="cantieri" class="sect">
+      <div class="wrap">
+        <div class="sect-header reveal">
+          <p class="t-label">Work in progress</p>
+          <h2 class="t-title">Cantieri aperti</h2>
+        </div>
+        <div id="wip-grid" class="grid-wip reveal"></div>
+      </div>
+    </section>
+
+    <section
+      id="domani"
+      class="sect"
+      style="
+        background: var(--bg-2);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      "
+    >
+      <div class="wrap" style="max-width: 1000px">
+        <div class="sect-header reveal">
+          <p class="t-label">Programma partecipato</p>
+          <h2 class="t-title">Le priorità del domani</h2>
+          <p class="t-sub">
+            Scegli da 1 a 3 priorità. Il voto è anonimo e locale.
+          </p>
+        </div>
+        <div id="vote-grid" class="grid-vote reveal"></div>
+        <div class="text-center" style="margin-top: 32px">
+          <button
+            id="vote-results-btn"
+            style="
+              background: none;
+              border: none;
+              color: var(--gold);
+              font-size: 12px;
+              font-weight: 600;
+              cursor: pointer;
+              letter-spacing: 0.06em;
+              text-transform: uppercase;
+            "
+          >
+            Vedi risultati parziali →
+          </button>
+        </div>
+        <div
+          id="vote-results"
+          style="display: none; max-width: 500px; margin: 32px auto 0"
+        ></div>
+      </div>
+    </section>
+
+    <section id="chi-sono" class="sect">
+      <div class="wrap" style="max-width: 800px">
+        <div class="sect-header reveal">
+          <p class="t-label">Il percorso</p>
+          <h2 class="t-title">Daniele Marcelli</h2>
+        </div>
+        <div
+          class="reveal"
+          style="
+            display: flex;
+            gap: 56px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+          "
+        >
+          <div style="flex: 1; min-width: 280px">
+            <p
+              style="
+                color: var(--text-2);
+                line-height: 1.85;
+                font-size: 15px;
+                margin-bottom: 40px;
+              "
+            >
+              Vicesindaco di Avigliano Umbro dal 2021. Collaboratore regionale.
+              Impegnato nello sviluppo del territorio, nella trasparenza
+              amministrativa e nella valorizzazione delle risorse locali.
+            </p>
+            <div class="timeline">
+              <div class="timeline-item">
+                <div class="timeline-dot" style="background: var(--gold)"></div>
+                <p style="font-weight: 700; color: var(--white)">
+                  Consigliere Comunale
+                </p>
+                <p
+                  style="font-size: 13px; color: var(--text-3); margin-top: 4px"
+                >
+                  Primo impegno istituzionale
+                </p>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot" style="background: var(--gold)"></div>
+                <p style="font-weight: 700; color: var(--white)">
+                  Vice Sindaco (2021 — oggi)
+                </p>
+                <p
+                  style="font-size: 13px; color: var(--text-3); margin-top: 4px"
+                >
+                  Gestione operativa, fondi, opere
+                </p>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot" style="background: var(--cyan)"></div>
+                <p style="font-weight: 700; color: var(--white)">
+                  Candidato 2027
+                </p>
+                <p
+                  style="font-size: 13px; color: var(--text-3); margin-top: 4px"
+                >
+                  Continuità e nuove sfide
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              width: 240px;
+              height: 320px;
+              background: var(--bg-3);
+              border: 1px solid var(--border);
+              border-radius: var(--r);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: var(--text-3);
+              font-size: 13px;
+              flex-shrink: 0;
+            "
+          >
+            Foto profilo
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="faq"
+      class="sect"
+      style="padding: 80px 0; background: var(--bg-2)"
+    >
+      <div class="wrap" style="max-width: 680px">
+        <div class="sect-header reveal">
+          <p class="t-label">Domande frequenti</p>
+          <h2 class="t-title">FAQ</h2>
+        </div>
+        <div
+          class="reveal"
+          id="faq-list"
+          style="display: flex; flex-direction: column; gap: 10px"
+        ></div>
+        <div class="reveal text-center" style="margin-top: 64px">
+          <h3
+            style="
+              font-family: &quot;Playfair Display&quot;, serif;
+              font-size: 1.6rem;
+              color: var(--white);
+              margin-bottom: 16px;
+            "
+          >
+            Contatti
+          </h3>
+          <p style="color: var(--text-3); font-size: 15px; margin-bottom: 28px">
+            Scrivi, segnala, proponi.
+          </p>
+          <div
+            style="
+              display: flex;
+              gap: 14px;
+              justify-content: center;
+              flex-wrap: wrap;
+            "
+          >
+            <a
+              href="mailto:info@aviglianoumbro2027.it"
+              class="btn-gold"
+              style="padding: 14px 32px; font-size: 13px"
+              >Email</a
+            ><a
+              href="#"
+              class="btn-outline"
+              style="padding: 14px 32px; font-size: 13px"
+              >WhatsApp</a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <div>
+          <span class="footer-brand">Avigliano</span
+          ><span class="footer-tag">2027</span>
+          <p style="font-size: 12px; margin-top: 6px">
+            Rendiconto trasparente 2021–2027
+          </p>
+        </div>
+        <div style="font-size: 12px; text-align: right">
+          <p>"Avigliano – prima di tutto"</p>
+          <p style="margin-top: 4px">Aggiornamento: febbraio 2026</p>
+        </div>
+      </div>
+    </footer>
+
+    <div class="lightbox" id="lightbox" onclick="this.classList.remove('open')">
+      <button class="lightbox-close">✕</button
+      ><img id="lightbox-img" src="" alt="" />
+    </div>
+    <div
+      id="modal-calc"
+      style="
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 9000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      "
+    >
+      <div
+        style="
+          background: var(--bg-2);
+          border: 1px solid var(--border);
+          border-radius: var(--r);
+          max-width: 480px;
+          width: 100%;
+          padding: 36px;
+          position: relative;
+        "
+      >
+        <button
+          onclick="document.getElementById('modal-calc').style.display='none'"
+          style="
+            position: absolute;
+            top: 14px;
+            right: 18px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-3);
+          "
+        >
+          ✕
+        </button>
+        <h3
+          style="
+            font-family: &quot;Playfair Display&quot;, serif;
+            font-size: 1.5rem;
+            color: var(--white);
+            margin-bottom: 16px;
+          "
+        >
+          Come calcoliamo
+        </h3>
+        <p style="font-size: 14px; color: var(--text-2); line-height: 1.75">
+          Ogni promessa del programma 2021 è codificata e abbinata ai risultati.
+          Una promessa è "coperta" quando ha almeno un progetto collegato. Gli
+          importi si riferiscono ai dati verificabili.
+        </p>
+      </div>
+    </div>
+
+    <div class="admin-overlay" id="admin-overlay"></div>
+    <div class="admin-panel" id="admin-panel">
+      <div style="padding: 36px">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+          "
+        >
+          <h3
+            style="
+              font-family: &quot;Playfair Display&quot;, serif;
+              font-size: 1.5rem;
+              color: var(--white);
+            "
+          >
+            Admin
+          </h3>
+          <button
+            id="close-admin"
+            style="
+              background: none;
+              border: none;
+              font-size: 24px;
+              cursor: pointer;
+              color: var(--text-3);
+            "
+          >
+            ✕
+          </button>
+        </div>
+        <div id="admin-login">
+          <label class="admin-label">Password</label
+          ><input
+            id="admin-pw"
+            type="password"
+            class="admin-input"
+            style="margin-bottom: 14px"
+            placeholder="Password"
+          /><button id="admin-login-btn" class="admin-btn">Accedi</button>
+        </div>
+        <div id="admin-main" style="display: none">
+          <div
+            style="
+              display: flex;
+              gap: 8px;
+              margin-bottom: 24px;
+              flex-wrap: wrap;
+            "
+            id="admin-tabs"
+          >
+            <button class="pill active" data-tab="a-projects">Progetti</button
+            ><button class="pill" data-tab="a-promises">Promesse</button
+            ><button class="pill" data-tab="a-data">Import/Export</button>
+          </div>
+          <div id="a-projects">
+            <button
+              id="add-proj-btn"
+              class="admin-btn"
+              style="margin-bottom: 16px"
+            >
+              + Nuovo Progetto
+            </button>
+            <div style="margin-bottom: 14px">
+              <input
+                id="admin-search"
+                class="admin-input"
+                placeholder="Cerca nei progetti..."
+              />
+            </div>
+            <div
+              id="admin-proj-list"
+              style="
+                max-height: 50vh;
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+              "
+            ></div>
+          </div>
+          <div id="a-promises" style="display: none">
+            <p
+              style="font-size: 13px; color: var(--text-3); margin-bottom: 14px"
+            >
+              Promesse dal programma elettorale.
+            </p>
+            <div
+              id="admin-prom-list"
+              style="
+                max-height: 55vh;
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+              "
+            ></div>
+          </div>
+          <div id="a-data" style="display: none">
+            <div style="display: flex; flex-direction: column; gap: 12px">
+              <button
+                id="export-btn"
+                class="admin-btn"
+                style="
+                  background: var(--bg-card);
+                  color: var(--text);
+                  border: 1px solid var(--border);
+                "
+              >
+                📥 Esporta JSON</button
+              ><label
+                class="admin-btn"
+                style="
+                  background: var(--bg-card);
+                  color: var(--text);
+                  border: 1px solid var(--border);
+                  text-align: center;
+                  cursor: pointer;
+                  display: block;
+                "
+                >📤 Importa JSON<input
+                  type="file"
+                  id="import-input"
+                  accept=".json"
+                  style="display: none" /></label
+              ><button
+                id="reset-btn"
+                class="admin-btn"
+                style="
+                  background: rgba(240, 96, 136, 0.08);
+                  color: var(--rose);
+                  border: 1px solid rgba(240, 96, 136, 0.2);
+                "
+              >
+                🗑 Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="proj-modal"
+      style="
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 10002;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      "
+    >
+      <div
+        style="
+          background: var(--bg-2);
+          border: 1px solid var(--border);
+          border-radius: var(--r);
+          max-width: 520px;
+          width: 100%;
+          max-height: 90vh;
+          overflow-y: auto;
+          padding: 32px;
+          position: relative;
+        "
+      >
+        <button
+          class="close-proj"
+          style="
+            position: absolute;
+            top: 14px;
+            right: 18px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-3);
+          "
+        >
+          ✕
+        </button>
+        <h3
+          style="
+            font-family: &quot;Playfair Display&quot;, serif;
+            font-size: 1.25rem;
+            color: var(--white);
+            margin-bottom: 20px;
+          "
+          id="proj-modal-title"
+        >
+          Nuovo Progetto
+        </h3>
+        <form
+          id="proj-form"
+          style="display: flex; flex-direction: column; gap: 12px"
+        >
+          <input type="hidden" id="pf-id" />
+          <div>
+            <label class="admin-label">Titolo*</label
+            ><input id="pf-titolo" class="admin-input" required />
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
+            <div>
+              <label class="admin-label">Area</label
+              ><select id="pf-area" class="admin-input">
+                <option value="1">1–Sociale</option>
+                <option value="2">2–Cultura</option>
+                <option value="3">3–Opere</option>
+                <option value="4">4–Ambiente</option>
+                <option value="5">5–Servizi</option>
+              </select>
+            </div>
+            <div>
+              <label class="admin-label">Tipo</label
+              ><select id="pf-tipo" class="admin-input">
+                <option value="opera">🏗️ Opera</option>
+                <option value="servizio">🟢 Servizio</option>
+                <option value="azione">📋 Azione</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="admin-label">Descrizione</label
+            ><textarea
+              id="pf-desc"
+              rows="2"
+              class="admin-input"
+              style="resize: vertical"
+            ></textarea>
+          </div>
+          <div>
+            <label class="admin-label">Impatto</label
+            ><input
+              id="pf-impatto"
+              class="admin-input"
+              placeholder="Es: 28.867€ nel commercio locale"
+            />
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
+            <div>
+              <label class="admin-label">Località</label
+              ><select id="pf-loc" class="admin-input">
+                <option>Avigliano</option>
+                <option>Sismano</option>
+                <option>Santa Restituta</option>
+                <option>Toscolano</option>
+                <option>Dunarobba</option>
+                <option>Tutto il territorio</option>
+              </select>
+            </div>
+            <div>
+              <label class="admin-label">Anno</label
+              ><input id="pf-anno" class="admin-input" placeholder="2024" />
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
+            <div>
+              <label class="admin-label">Stato</label
+              ><select id="pf-stato" class="admin-input">
+                <option value="concluso">Concluso</option>
+                <option value="in_corso">In corso</option>
+                <option value="programmato">Programmato</option>
+              </select>
+            </div>
+            <div>
+              <label class="admin-label">Importo €</label
+              ><input id="pf-importo" type="number" class="admin-input" />
+            </div>
+          </div>
+          <div>
+            <label class="admin-label">Fonte</label
+            ><input
+              id="pf-fonte"
+              class="admin-input"
+              placeholder="Comune / Regione / PNRR..."
+            />
+          </div>
+          <div>
+            <label class="admin-label">Promesse collegate</label
+            ><input id="pf-prom" class="admin-input" placeholder="P01,P02" />
+          </div>
+          <div>
+            <label class="admin-label">Link atto</label
+            ><input id="pf-link" class="admin-input" />
+          </div>
+          <div id="pf-photo-section">
+            <p
+              style="
+                font-size: 12px;
+                font-weight: 700;
+                color: var(--text-2);
+                margin: 10px 0 8px;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+              "
+            >
+              📷 Foto prima/dopo
+            </p>
+            <div
+              style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px"
+            >
+              <div>
+                <label
+                  style="
+                    font-size: 11px;
+                    font-weight: 600;
+                    color: var(--text-3);
+                  "
+                  >Foto PRIMA</label
+                ><input
+                  type="file"
+                  id="pf-prima"
+                  accept="image/*"
+                  multiple
+                  style="font-size: 12px; margin-top: 6px; color: var(--text-2)"
+                />
+                <div
+                  id="pf-prima-prev"
+                  style="
+                    display: flex;
+                    gap: 4px;
+                    flex-wrap: wrap;
+                    margin-top: 8px;
+                  "
+                ></div>
+              </div>
+              <div>
+                <label
+                  style="font-size: 11px; font-weight: 600; color: var(--green)"
+                  >Foto DOPO</label
+                ><input
+                  type="file"
+                  id="pf-dopo"
+                  accept="image/*"
+                  multiple
+                  style="font-size: 12px; margin-top: 6px; color: var(--text-2)"
+                />
+                <div
+                  id="pf-dopo-prev"
+                  style="
+                    display: flex;
+                    gap: 4px;
+                    flex-wrap: wrap;
+                    margin-top: 8px;
+                  "
+                ></div>
+              </div>
+            </div>
+            <div style="margin-top: 10px">
+              <label class="admin-label">Note confronto</label
+              ><input
+                id="pf-note"
+                class="admin-input"
+                placeholder="Es: rifatta pavimentazione"
+              />
+            </div>
+          </div>
+          <button type="submit" class="admin-btn" style="margin-top: 10px">
+            💾 Salva progetto
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script>
+/* ============================================================
+   DataStore — Avigliano Umbro 2027
+   Persistent JSON store with promise↔result matching engine
+   ============================================================ */
+const DataStore = (() => {
+  const SK = "av27_v2";
+
+  /* -------- AREA META -------- */
+  const AREAS = {
+    1: { name: "Politiche sociali", icon: "🫶", color: "#E8457C" },
+    2: { name: "Cultura e turismo", icon: "🎭", color: "#E9A319" },
+    3: { name: "Opere pubbliche", icon: "🏗️", color: "#7C5CFC" },
+    4: { name: "Ambiente", icon: "🌿", color: "#0DA678" },
+    5: { name: "Trasparenza e servizi", icon: "📋", color: "#2B7FFF" },
+  };
+
+  /* -------- DEFAULT PROMISES (from Programma Elettorale) -------- */
+  const DP = [
+    {
+      id: "P01",
+      area: "1",
+      tema: "Natalità e famiglia",
+      testo:
+        "Iniziative a sostegno della natalità e prima infanzia: pacco nuovi nati, voucher asilo nido Sismano, aiuti famiglie numerose",
+      rif: "Programma – Sociale",
+      tag: ["natalità", "famiglia", "infanzia"],
+    },
+    {
+      id: "P02",
+      area: "1",
+      tema: "Terza età",
+      testo:
+        "Supportare iniziative terza età, sviluppare spazi aggregazione, favorire struttura diurna anziani",
+      rif: "Programma – Sociale",
+      tag: ["anziani", "aggregazione"],
+    },
+    {
+      id: "P03",
+      area: "1",
+      tema: "Giovani",
+      testo:
+        "Iniziative per giovani: sensibilizzazione, prevenzione dipendenze, cineforum, discussioni, progetti scuole",
+      rif: "Programma – Sociale",
+      tag: ["giovani", "scuola", "prevenzione"],
+    },
+    {
+      id: "P04",
+      area: "1",
+      tema: "Educazione civica",
+      testo:
+        "Educazione civica, alimentare e ambientale nelle scuole con associazioni e distretto biologico",
+      rif: "Programma – Sociale",
+      tag: ["scuola", "educazione"],
+    },
+    {
+      id: "P05",
+      area: "1",
+      tema: "Trasporto scolastico",
+      testo: "Agevolazioni per il trasporto scolastico",
+      rif: "Programma – Sociale",
+      tag: ["scuolabus", "agevolazioni"],
+    },
+    {
+      id: "P06",
+      area: "1",
+      tema: "Agevolazioni fiscali",
+      testo:
+        "Agevolazioni fiscali in base a fasce ISEE per famiglie in difficoltà",
+      rif: "Programma – Sociale",
+      tag: ["fiscale", "ISEE"],
+    },
+    {
+      id: "P07",
+      area: "1",
+      tema: "Punto prelievi",
+      testo: "Impegno per punto prelievi USL sul territorio comunale",
+      rif: "Programma – Sociale",
+      tag: ["sanità", "prelievi"],
+    },
+    {
+      id: "P08",
+      area: "1",
+      tema: "Volontariato",
+      testo:
+        "Polo del volontariato per coordinare iniziative a favore cittadini svantaggiati",
+      rif: "Programma – Sociale",
+      tag: ["volontariato", "associazioni"],
+    },
+    {
+      id: "P09",
+      area: "1",
+      tema: "Prevenzione violenza",
+      testo:
+        "Sportello e iniziative prevenzione violenza di genere e supporto psicologico",
+      rif: "Programma – Sociale",
+      tag: ["violenza", "prevenzione"],
+    },
+    {
+      id: "P10",
+      area: "2",
+      tema: "Biblioteca",
+      testo:
+        "Riaprire biblioteca con nuova gestione (servizio civile, intercomunale, associazioni). Calendario attività formative e culturali",
+      rif: "Programma – Cultura",
+      tag: ["biblioteca", "cultura", "formazione"],
+    },
+    {
+      id: "P11",
+      area: "2",
+      tema: "Struttura polivalente",
+      testo: "Progettare struttura polivalente / teatro per grandi eventi",
+      rif: "Programma – Cultura",
+      tag: ["teatro", "polivalente", "eventi"],
+    },
+    {
+      id: "P12",
+      area: "2",
+      tema: "Eventi culturali",
+      testo:
+        "Eventi culturali importanti: Festa musica, Foresta Fossile, Carnevale in manifesto ampio tutto l'anno",
+      rif: "Programma – Cultura",
+      tag: ["eventi", "musica", "carnevale"],
+    },
+    {
+      id: "P13",
+      area: "2",
+      tema: "Festival cultura",
+      testo: "Studio per festival della cultura (Cinema, Teatro, Musica)",
+      rif: "Programma – Cultura",
+      tag: ["festival", "cinema", "teatro"],
+    },
+    {
+      id: "P14",
+      area: "2",
+      tema: "Borghi storici",
+      testo:
+        'Fase 2 riqualificazione borghi con promozione turistica. Circuito "borghi più belli d\'Italia"',
+      rif: "Programma – Cultura",
+      tag: ["borghi", "turismo"],
+    },
+    {
+      id: "P15",
+      area: "2",
+      tema: "Grotta Bella",
+      testo: "Proseguire studi Grotta Bella, valorizzare e rendere fruibile",
+      rif: "Programma – Cultura",
+      tag: ["grotta", "natura"],
+    },
+    {
+      id: "P16",
+      area: "2",
+      tema: "Ufficio turistico",
+      testo:
+        "Ufficio turistico, portale, simbolo identificativo, miglioramento cartellonistica",
+      rif: "Programma – Cultura",
+      tag: ["turismo", "comunicazione", "segnaletica"],
+    },
+    {
+      id: "P17",
+      area: "2",
+      tema: "Sentieri",
+      testo:
+        "Valorizzazione sentieri escursionistici e percorso intercomunale integrato",
+      rif: "Programma – Cultura",
+      tag: ["sentieri", "escursionismo"],
+    },
+    {
+      id: "P18",
+      area: "2",
+      tema: "Aree ristoro e camper",
+      testo: "Riqualificazione aree ristoro. Aree camper Sismano e capoluogo",
+      rif: "Programma – Cultura",
+      tag: ["camper", "ristoro"],
+    },
+    {
+      id: "P19",
+      area: "2",
+      tema: "Gemellaggi",
+      testo: "Ripresa gemellaggio e scambi culturali interscolastici",
+      rif: "Programma – Cultura",
+      tag: ["gemellaggio", "scuola"],
+    },
+    {
+      id: "P20",
+      area: "2",
+      tema: "Fiere e sagre",
+      testo: "Fiere tematiche per artigianato e enogastronomia locale",
+      rif: "Programma – Cultura",
+      tag: ["fiere", "gastronomia"],
+    },
+    {
+      id: "P21",
+      area: "2",
+      tema: "Foresta Fossile",
+      testo: "Far conoscere la Foresta Fossile a livello internazionale",
+      rif: "Programma – Cultura",
+      tag: ["foresta fossile", "paleontologia"],
+    },
+    {
+      id: "P22",
+      area: "2",
+      tema: "Filo della tradizione",
+      testo:
+        "Iniziative per riscoprire arte del ricamo e avvicinare giovani alle tradizioni",
+      rif: "Programma – Associazionismo",
+      tag: ["tradizioni", "ricamo"],
+    },
+    {
+      id: "P23",
+      area: "3",
+      tema: "Strade",
+      testo:
+        "Piano asfalto strade sterrate/brecciate. Regimentazione acque. Ingresso Toscolano",
+      rif: "Programma – Opere",
+      tag: ["strade", "asfalto", "manutenzione"],
+    },
+    {
+      id: "P24",
+      area: "3",
+      tema: "Strade provinciali",
+      testo:
+        "Sollecitare Provincia per SP39 (Sismano) e SP37 (S. Restituta/Toscolano)",
+      rif: "Programma – Opere",
+      tag: ["provincia", "SP39", "SP37"],
+    },
+    {
+      id: "P25",
+      area: "3",
+      tema: "Parchi e giochi",
+      testo:
+        "Sistemare parchi Dunarobba, Toscolano, capoluogo. Parco Sant'Egidio con illuminazione e giochi",
+      rif: "Programma – Opere",
+      tag: ["parchi", "giochi", "verde"],
+    },
+    {
+      id: "P26",
+      area: "3",
+      tema: "Nuovi spazi",
+      testo:
+        "Spazio-giochi S. Restituta/Pian dell'Ara. Parco Piacenti con palestra all'aperto",
+      rif: "Programma – Opere",
+      tag: ["spazi", "sport"],
+    },
+    {
+      id: "P27",
+      area: "3",
+      tema: "Ex Cottolengo",
+      testo:
+        "Rendere fruibile Ex Cottolengo con nuova destinazione, collaborazione pubblico/privato",
+      rif: "Programma – Opere",
+      tag: ["cottolengo", "aggregazione"],
+    },
+    {
+      id: "P28",
+      area: "3",
+      tema: "Teatro comunale",
+      testo: "Sistemazione ed efficientamento energetico Teatro Comunale",
+      rif: "Programma – Opere",
+      tag: ["teatro", "energia"],
+    },
+    {
+      id: "P29",
+      area: "3",
+      tema: "Viabilità",
+      testo:
+        "Marciapiedi nuovi e esistenti capoluogo e frazioni. Revisione generale viabilità",
+      rif: "Programma – Opere",
+      tag: ["marciapiedi", "viabilità"],
+    },
+    {
+      id: "P30",
+      area: "3",
+      tema: "Parcheggi",
+      testo: "Incremento parcheggi centro storico Avigliano e Toscolano",
+      rif: "Programma – Opere",
+      tag: ["parcheggi"],
+    },
+    {
+      id: "P31",
+      area: "3",
+      tema: "Arredo urbano",
+      testo:
+        "Panchine, cestini, piantumazione, riqualificazione piazzette Santa Restituta",
+      rif: "Programma – Opere",
+      tag: ["arredo", "verde", "panchine"],
+    },
+    {
+      id: "P32",
+      area: "3",
+      tema: "Illuminazione",
+      testo:
+        "Efficientamento illuminazione Toscolano/S. Restituta. Incremento punti luce",
+      rif: "Programma – Opere",
+      tag: ["illuminazione", "energia"],
+    },
+    {
+      id: "P33",
+      area: "3",
+      tema: "Cimiteri",
+      testo: "Riqualificazione cimiteri Avigliano e frazioni",
+      rif: "Programma – Opere",
+      tag: ["cimiteri"],
+    },
+    {
+      id: "P34",
+      area: "3",
+      tema: "Ripopolamento",
+      testo:
+        "Recupero edifici abbandonati. Incentivi giovani per centri storici",
+      rif: "Programma – Opere",
+      tag: ["ripopolamento", "giovani"],
+    },
+    {
+      id: "P35",
+      area: "4",
+      tema: "Rifiuti",
+      testo:
+        "Raccolta differenziata con tariffa puntuale. Compattatore. Cestini. Controllo abbandono",
+      rif: "Programma – Ambiente",
+      tag: ["rifiuti", "TARIC", "differenziata"],
+    },
+    {
+      id: "P36",
+      area: "4",
+      tema: "Randagismo",
+      testo:
+        "Contenimento randagismo: chippatura, sterilizzazione, incentivi adozioni",
+      rif: "Programma – Ambiente",
+      tag: ["randagismo", "animali"],
+    },
+    {
+      id: "P37",
+      area: "4",
+      tema: "Tutela ambientale",
+      testo: "Colonnine elettriche. Recupero fontanili. Comune amico delle api",
+      rif: "Programma – Ambiente",
+      tag: ["ambiente", "elettrico", "api"],
+    },
+    {
+      id: "P38",
+      area: "5",
+      tema: "Sportello cittadino",
+      testo: "Sportello del cittadino, pagina social, portale segnalazioni",
+      rif: "Programma – Trasparenza",
+      tag: ["sportello", "trasparenza"],
+    },
+    {
+      id: "P39",
+      area: "5",
+      tema: "Consulta giovani",
+      testo: "Consiglio comunale giovani per avvicinarli all'amministrazione",
+      rif: "Programma – Trasparenza",
+      tag: ["giovani", "consulta"],
+    },
+    {
+      id: "P40",
+      area: "5",
+      tema: "Consulta frazioni",
+      testo: "Consulta e consigliere delegato per segnalazioni frazioni",
+      rif: "Programma – Trasparenza",
+      tag: ["frazioni", "consulta"],
+    },
+    {
+      id: "P41",
+      area: "5",
+      tema: "Commercio",
+      testo:
+        'Favorire insediamento attività, collaborare con commercianti, "Regaliamoci Avigliano"',
+      rif: "Programma – Commercio",
+      tag: ["commercio", "imprese"],
+    },
+    {
+      id: "P42",
+      area: "5",
+      tema: "Digitalizzazione",
+      testo: "Digitalizzazione ente. Fibra. Archivio digitale",
+      rif: "Programma – Commercio",
+      tag: ["digitalizzazione", "fibra"],
+    },
+    {
+      id: "P43",
+      area: "5",
+      tema: "Sport",
+      testo:
+        "Illuminazione/recinzioni campetti. Aree polisportive. Palestra all'aperto",
+      rif: "Programma – Sport",
+      tag: ["sport", "impianti"],
+    },
+    {
+      id: "P44",
+      area: "5",
+      tema: "Sicurezza",
+      testo:
+        "Riorganizzazione polizia municipale. Videosorveglianza. Zone emergenza",
+      rif: "Programma – Sicurezza",
+      tag: ["sicurezza", "polizia"],
+    },
+    {
+      id: "P45",
+      area: "5",
+      tema: "Associazionismo",
+      testo: "Sostenere associazioni e promuovere iniziative collaborative",
+      rif: "Programma – Associazionismo",
+      tag: ["associazioni", "volontariato"],
+    },
+  ];
+
+  /* -------- DEFAULT PROJECTS -------- 
+     tipo: "opera" → ha senso prima/dopo visivo
+           "servizio" → servizio attivato, mostra impatto/KPI
+           "azione" → atto amministrativo, delibera, iniziativa puntuale
+  */
+  const DR = [
+    {
+      id: "R01",
+      area: "1",
+      tipo: "servizio",
+      titolo: "Borgo 0–6 Sismano",
+      desc: "Attivazione servizio educativo 0-6 anni a Sismano",
+      localita: "Sismano",
+      anno: "2023",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Nuovo servizio per famiglie della frazione",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P01"],
+    },
+    {
+      id: "R02",
+      area: "1",
+      tipo: "servizio",
+      titolo: "Corsi genitorialità e adolescenza",
+      desc: "Percorsi formativi con CIPSS e Pepita su genitorialità e problematiche adolescenziali",
+      localita: "Avigliano",
+      anno: "2023",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Famiglie e ragazzi coinvolti nei percorsi",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P03", "P04"],
+    },
+    {
+      id: "R03",
+      area: "1",
+      tipo: "azione",
+      titolo: "Ammortizzazione costi scuolabus e mensa",
+      desc: "Contenimento degli aumenti per le famiglie",
+      localita: "Tutto il territorio",
+      anno: "2022",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Ridotto impatto economico sulle famiglie",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P05", "P06"],
+    },
+    {
+      id: "R04",
+      area: "1",
+      tipo: "azione",
+      titolo: "Bando case popolari + assegnazioni",
+      desc: "Pubblicazione bando e assegnazione alloggi ERP",
+      localita: "Avigliano",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune/Regione",
+      impatto: "Alloggi assegnati a famiglie in difficoltà",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P06"],
+    },
+    {
+      id: "R05",
+      area: "1",
+      tipo: "servizio",
+      titolo: "Consulta Comunale dei Giovani",
+      desc: "Avvio Consulta con incontri istituzionali e coinvolgimento giovanile",
+      localita: "Avigliano",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Giovani coinvolti nella vita amministrativa",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P39", "P03"],
+    },
+
+    {
+      id: "R06",
+      area: "2",
+      tipo: "servizio",
+      titolo: 'Biblioteca "Maestra Emilia Bettelli"',
+      desc: "Riapertura e rilancio a costo zero grazie a Servizio Civile e volontari civici",
+      localita: "Avigliano",
+      anno: "2022",
+      stato: "concluso",
+      importo: 0,
+      fonte: "Servizio Civile / Volontariato",
+      impatto: "Biblioteca riaperta a costo zero per il Comune",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P10"],
+    },
+    {
+      id: "R07",
+      area: "2",
+      tipo: "servizio",
+      titolo: "Coworking e co-studying",
+      desc: "Postazioni di lavoro e studio condiviso in biblioteca",
+      localita: "Avigliano",
+      anno: "2023",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Spazio gratuito per studenti e lavoratori",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P10"],
+    },
+    {
+      id: "R08",
+      area: "2",
+      tipo: "servizio",
+      titolo: "Il filo della tradizione",
+      desc: "Corsi per riscoprire l'arte del ricamo e le tradizioni locali",
+      localita: "Avigliano",
+      anno: "2023",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Tradizione artigianale rilanciata",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P22"],
+    },
+    {
+      id: "R09",
+      area: "2",
+      tipo: "servizio",
+      titolo: "Cineforum comunale",
+      desc: "Sperimentazione del cineforum in biblioteca",
+      localita: "Avigliano",
+      anno: "2023",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Nuovo momento culturale e di aggregazione",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P03", "P12", "P13"],
+    },
+    {
+      id: "R10",
+      area: "2",
+      tipo: "servizio",
+      titolo: "Festa della Musica e delle Arti",
+      desc: "Ampliamento e consolidamento dell'evento annuale",
+      localita: "Avigliano",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Evento culturale di riferimento territoriale",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P12"],
+    },
+    {
+      id: "R11",
+      area: "2",
+      tipo: "servizio",
+      titolo: "Programma 50° Anniversario",
+      desc: "Celebrazioni ufficiali per il cinquantenario del Comune",
+      localita: "Tutto il territorio",
+      anno: "2025",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Identità comunitaria rafforzata",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P12"],
+    },
+    {
+      id: "R12",
+      area: "2",
+      tipo: "opera",
+      titolo: "Segnaletica turistica QR code",
+      desc: "Nuova segnaletica con QR code a Toscolano e Santa Restituta",
+      localita: "Toscolano",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Percorsi turistici digitalizzati",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P16"],
+    },
+    {
+      id: "R13",
+      area: "2",
+      tipo: "servizio",
+      titolo: "Sito/app promozione territoriale",
+      desc: "Visit Avigliano Umbro — piattaforma digitale turistica",
+      localita: "Tutto il territorio",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Visibilità turistica online del territorio",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P16"],
+    },
+    {
+      id: "R14",
+      area: "2",
+      tipo: "opera",
+      titolo: "Foresta Fossile – riqualificazione",
+      desc: "Riqualificazione ed efficientamento del Centro di Paleontologia Vegetale",
+      localita: "Dunarobba",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune/Regione",
+      impatto: "Sito paleontologico unico valorizzato",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P21"],
+    },
+    {
+      id: "R15",
+      area: "2",
+      tipo: "azione",
+      titolo: "Grotta Bella – studi CARIT",
+      desc: "Due bandi CARIT vinti per studi e ricerche scientifiche",
+      localita: "Avigliano",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "CARIT",
+      impatto: "Base scientifica per futura valorizzazione",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P15"],
+    },
+    {
+      id: "R16",
+      area: "2",
+      tipo: "servizio",
+      titolo: "Bici in Comune",
+      desc: "Progetto cicloturismo sul territorio (80.000 €)",
+      localita: "Tutto il territorio",
+      anno: "2024",
+      stato: "in_corso",
+      importo: 80000,
+      fonte: "Ministero",
+      impatto: "Infrastruttura ciclabile per turismo lento",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P17"],
+    },
+
+    {
+      id: "R17",
+      area: "3",
+      tipo: "opera",
+      titolo: "Asfalto Via Levi + Via Salvemini",
+      desc: "Asfaltatura completa delle due strade",
+      localita: "Avigliano",
+      anno: "2022",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P23"],
+    },
+    {
+      id: "R18",
+      area: "3",
+      tipo: "opera",
+      titolo: "Strada del Pergolone",
+      desc: "Cementazione della strada",
+      localita: "Avigliano",
+      anno: "2023",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P23"],
+    },
+    {
+      id: "R19",
+      area: "3",
+      tipo: "opera",
+      titolo: "Strada Santa Restituta",
+      desc: "Riqualificazione stradale completa",
+      localita: "Santa Restituta",
+      anno: "2023",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P23"],
+    },
+    {
+      id: "R20",
+      area: "3",
+      tipo: "opera",
+      titolo: "SP37 e SP39 con Provincia",
+      desc: "Riqualificazione strade provinciali",
+      localita: "Sismano",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Provincia",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P24"],
+    },
+    {
+      id: "R21",
+      area: "3",
+      tipo: "opera",
+      titolo: "Strada delle Pantane",
+      desc: "Imbrecciatura e miglioramento idraulico",
+      localita: "Avigliano",
+      anno: "2023",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P23"],
+    },
+    {
+      id: "R22",
+      area: "3",
+      tipo: "opera",
+      titolo: "Semaforo pedonale scuole",
+      desc: "Installazione semaforo automatico per sicurezza scolastica",
+      localita: "Avigliano",
+      anno: "2023",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Sicurezza stradale bambini",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P29"],
+    },
+    {
+      id: "R23",
+      area: "3",
+      tipo: "opera",
+      titolo: "14 parcheggi + senso unico",
+      desc: "Nuovi parcheggi in centro storico e riorganizzazione viabilità",
+      localita: "Avigliano",
+      anno: "2023",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P30"],
+    },
+    {
+      id: "R24",
+      area: "3",
+      tipo: "opera",
+      titolo: "Parcheggio Sismano",
+      desc: "Sistemazione parcheggio a servizio del borgo",
+      localita: "Sismano",
+      anno: "2023",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P30"],
+    },
+    {
+      id: "R25",
+      area: "3",
+      tipo: "opera",
+      titolo: "Piazza del Teatro",
+      desc: "Lampioni, aiuole, fontana — riqualificazione completa",
+      localita: "Avigliano",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P31"],
+    },
+    {
+      id: "R26",
+      area: "3",
+      tipo: "opera",
+      titolo: "Piazza della Comunità + giochi",
+      desc: "Riqualificazione piazza e ampliamento area giochi",
+      localita: "Avigliano",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P25", "P31"],
+    },
+    {
+      id: "R27",
+      area: "3",
+      tipo: "opera",
+      titolo: "Parco Piacenti + bocce",
+      desc: "Nuovi giochi e campo da bocce",
+      localita: "Avigliano",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P26"],
+    },
+    {
+      id: "R28",
+      area: "3",
+      tipo: "opera",
+      titolo: "Bagno pubblico Sant'Egidio",
+      desc: "Servizi igienici al Parco di Sant'Egidio",
+      localita: "Avigliano",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P25"],
+    },
+    {
+      id: "R29",
+      area: "3",
+      tipo: "opera",
+      titolo: "Loculi Santa Restituta",
+      desc: "Nuovi loculi al cimitero",
+      localita: "Santa Restituta",
+      anno: "2023",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P33"],
+    },
+    {
+      id: "R30",
+      area: "3",
+      tipo: "opera",
+      titolo: "Blocco loculi Avigliano",
+      desc: "Nuovo blocco cimitero capoluogo",
+      localita: "Avigliano",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P33"],
+    },
+    {
+      id: "R31",
+      area: "3",
+      tipo: "opera",
+      titolo: "Cimitero Sismano",
+      desc: "Riqualificazione completa",
+      localita: "Sismano",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P33"],
+    },
+    {
+      id: "R32",
+      area: "3",
+      tipo: "opera",
+      titolo: "Panchine turistiche e cestini",
+      desc: "Arredo urbano personalizzato su tutto il territorio",
+      localita: "Tutto il territorio",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P31"],
+    },
+    {
+      id: "R33",
+      area: "3",
+      tipo: "opera",
+      titolo: "Arredo urbano migliorato",
+      desc: "Interventi diffusi di miglioramento",
+      localita: "Tutto il territorio",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P31"],
+    },
+
+    {
+      id: "R34",
+      area: "4",
+      tipo: "azione",
+      titolo: "Tariffa puntuale TARIC",
+      desc: "Introdotta tariffa puntuale sui rifiuti",
+      localita: "Tutto il territorio",
+      anno: "2023",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Paghi in base a quanto produci",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P35"],
+    },
+    {
+      id: "R35",
+      area: "4",
+      tipo: "opera",
+      titolo: "Teleriscaldamento completato",
+      desc: "Completamento impianto teleriscaldamento",
+      localita: "Avigliano",
+      anno: "2023",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune/Regione",
+      impatto: "Riduzione emissioni e costi energetici",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P37"],
+    },
+    {
+      id: "R36",
+      area: "4",
+      tipo: "opera",
+      titolo: "Efficientamento ex scuole Dunarobba",
+      desc: "Efficientamento energetico edificio",
+      localita: "Dunarobba",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Regione",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P32"],
+    },
+    {
+      id: "R37",
+      area: "4",
+      tipo: "opera",
+      titolo: "Più punti luce + rete",
+      desc: "Incremento punti luce e ampliamento rete illuminazione",
+      localita: "Tutto il territorio",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P32"],
+    },
+    {
+      id: "R38",
+      area: "4",
+      tipo: "opera",
+      titolo: "Illuminazione storica perenne",
+      desc: "Simboli del Comune illuminati stabilmente",
+      localita: "Avigliano",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P32"],
+    },
+    {
+      id: "R39",
+      area: "4",
+      tipo: "azione",
+      titolo: "Bonus 300€ adozioni + canile",
+      desc: "Incentivi per adozioni e contenimento costi gestione",
+      localita: "Tutto il territorio",
+      anno: "2023",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Più adozioni, meno costi canile",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P36"],
+    },
+    {
+      id: "R40",
+      area: "4",
+      tipo: "azione",
+      titolo: "Cattura randagi",
+      desc: "Interventi sistematici sul territorio",
+      localita: "Tutto il territorio",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Territorio più sicuro",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P36"],
+    },
+
+    {
+      id: "R41",
+      area: "5",
+      tipo: "servizio",
+      titolo: "Sportello del Cittadino",
+      desc: "Riferimento diretto con gli amministratori",
+      localita: "Avigliano",
+      anno: "2022",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Canale diretto cittadino-amministrazione",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P38"],
+    },
+    {
+      id: "R42",
+      area: "5",
+      tipo: "servizio",
+      titolo: "Chat WhatsApp comunale",
+      desc: '"Il Comune a portata di mano" — canale diretto',
+      localita: "Tutto il territorio",
+      anno: "2022",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Comunicazione immediata",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P38"],
+    },
+    {
+      id: "R43",
+      area: "5",
+      tipo: "azione",
+      titolo: "Registri volontariato civico",
+      desc: "Attivazione registri ufficiali del volontariato",
+      localita: "Avigliano",
+      anno: "2023",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Riconoscimento formale volontariato",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P08", "P45"],
+    },
+    {
+      id: "R44",
+      area: "5",
+      tipo: "servizio",
+      titolo: "SUAPE e pratiche edilizie online",
+      desc: "Digitalizzazione completa sportello e pratiche",
+      localita: "Avigliano",
+      anno: "2023",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Zero code, tutto online",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P42"],
+    },
+    {
+      id: "R45",
+      area: "5",
+      tipo: "servizio",
+      titolo: "Nuovo sito web comunale (PNRR)",
+      desc: "Rifacimento completo del sito istituzionale",
+      localita: "Avigliano",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "PNRR",
+      impatto: "Comune digitale accessibile",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P42"],
+    },
+    {
+      id: "R46",
+      area: "5",
+      tipo: "azione",
+      titolo: "Sostegno commercio 28.867€",
+      desc: 'Erogazioni + ViviAvigliano + "Regaliamoci Avigliano"',
+      localita: "Avigliano",
+      anno: "2024",
+      stato: "concluso",
+      importo: 28867,
+      fonte: "Comune",
+      impatto: "28.867€ iniettati nel commercio locale",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P41"],
+    },
+    {
+      id: "R47",
+      area: "5",
+      tipo: "opera",
+      titolo: "Impianti sportivi 70.000€",
+      desc: "Ammodernamento con fondi regionali",
+      localita: "Avigliano",
+      anno: "2024",
+      stato: "concluso",
+      importo: 70000,
+      fonte: "Regione",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P43"],
+    },
+    {
+      id: "R48",
+      area: "5",
+      tipo: "opera",
+      titolo: "Fari campo sportivo",
+      desc: "Riqualificazione illuminazione campo",
+      localita: "Avigliano",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P43"],
+    },
+    {
+      id: "R49",
+      area: "5",
+      tipo: "azione",
+      titolo: "Polizia Municipale ricostituita",
+      desc: "Ricostituzione del servizio dopo anni di assenza",
+      localita: "Avigliano",
+      anno: "2023",
+      stato: "concluso",
+      importo: null,
+      fonte: "Comune",
+      impatto: "Presidio territoriale ripristinato",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P44"],
+    },
+    {
+      id: "R50",
+      area: "5",
+      tipo: "opera",
+      titolo: "Ex Cottolengo – acquisizione",
+      desc: "Acquisizione e finanziamento ristrutturazione (477.000€)",
+      localita: "Avigliano",
+      anno: "2025",
+      stato: "in_corso",
+      importo: 477000,
+      fonte: "Comune/Bando",
+      impatto: "Struttura storica restituita alla comunità",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P27"],
+    },
+    {
+      id: "R51",
+      area: "5",
+      tipo: "opera",
+      titolo: 'Bando "Via della Pace"',
+      desc: "Vittoria bando riqualificazione urbana",
+      localita: "Avigliano",
+      anno: "2025",
+      stato: "in_corso",
+      importo: null,
+      fonte: "Bando",
+      impatto: "",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P23", "P31"],
+    },
+    {
+      id: "R52",
+      area: "5",
+      tipo: "azione",
+      titolo: "Ingresso Aree Interne",
+      desc: "Il Comune entra nella Strategia Nazionale Aree Interne",
+      localita: "Tutto il territorio",
+      anno: "2024",
+      stato: "concluso",
+      importo: null,
+      fonte: "Stato",
+      impatto: "Accesso a fondi dedicati per territori fragili",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: [],
+    },
+    {
+      id: "R53",
+      area: "2",
+      tipo: "opera",
+      titolo: "Centro Polifunzionale Agorà",
+      desc: "Spazio polivalente per eventi, cultura, aggregazione — in progettazione",
+      localita: "Avigliano",
+      anno: "2025",
+      stato: "in_corso",
+      importo: null,
+      fonte: "Fondi pubblici",
+      impatto: "Spazio che mancava per la comunità",
+      prima: [],
+      dopo: [],
+      note: "",
+      link: "",
+      promesse: ["P11"],
+    },
+  ];
+
+  let promises = [],
+    projects = [];
+
+  function load() {
+    const s = localStorage.getItem(SK);
+    if (s) {
+      try {
+        const d = JSON.parse(s);
+        promises = d.promises || [...DP];
+        projects = d.projects || [...DR];
+        /* migration: ensure new fields exist */
+        projects.forEach((p) => {
+          if (!p.tipo) p.tipo = "opera";
+          if (!p.impatto) p.impatto = "";
+          if (!p.prima) p.prima = p.primaImg || [];
+          if (!p.dopo) p.dopo = p.dopoImg || [];
+          if (!p.promesse) p.promesse = p.matchPromiseIds || [];
+          delete p.primaImg;
+          delete p.dopoImg;
+          delete p.matchPromiseIds;
+        });
+      } catch (e) {
+        promises = [...DP];
+        projects = [...DR];
+      }
+    } else {
+      promises = [...DP];
+      projects = [...DR];
+    }
+  }
+
+  function save() {
+    localStorage.setItem(SK, JSON.stringify({ promises, projects }));
+  }
+
+  function match() {
+    const r = { total: 0, covered: 0, byArea: {}, details: [] };
+    Object.keys(AREAS).forEach(
+      (a) => (r.byArea[a] = { total: 0, covered: 0, concluso: 0, in_corso: 0 }),
+    );
+    promises.forEach((pr) => {
+      r.total++;
+      if (r.byArea[pr.area]) r.byArea[pr.area].total++;
+      const linked = projects.filter(
+        (p) => p.promesse && p.promesse.includes(pr.id),
+      );
+      if (linked.length > 0) {
+        r.covered++;
+        if (r.byArea[pr.area]) r.byArea[pr.area].covered++;
+      }
+      linked.forEach((l) => {
+        if (r.byArea[pr.area]) {
+          if (l.stato === "concluso") r.byArea[pr.area].concluso++;
+          else r.byArea[pr.area].in_corso++;
+        }
+      });
+      r.details.push({
+        promise: pr,
+        results: linked,
+        covered: linked.length > 0,
+      });
+    });
+    return r;
+  }
+
+  function getOpere() {
+    return projects.filter(
+      (p) => p.tipo === "opera" && (p.prima?.length > 0 || p.dopo?.length > 0),
+    );
+  }
+  function getWIP() {
+    return projects.filter(
+      (p) => p.stato === "in_corso" || p.stato === "programmato",
+    );
+  }
+
+  load();
+
+  return {
+    AREAS,
+    getPromises: () => promises,
+    getProjects: () => projects,
+    getOpere,
+    getWIP,
+    match,
+    addProject(p) {
+      projects.push(p);
+      save();
+    },
+    updateProject(id, d) {
+      const i = projects.findIndex((p) => p.id === id);
+      if (i >= 0) {
+        projects[i] = { ...projects[i], ...d };
+        save();
+      }
+    },
+    deleteProject(id) {
+      projects = projects.filter((p) => p.id !== id);
+      save();
+    },
+    exportJSON() {
+      return JSON.stringify({ promises, projects }, null, 2);
+    },
+    importJSON(j) {
+      try {
+        const d = JSON.parse(j);
+        if (d.promises) promises = d.promises;
+        if (d.projects) projects = d.projects;
+        save();
+        return true;
+      } catch (e) {
+        return false;
+      }
+    },
+    reset() {
+      promises = [...DP];
+      projects = [...DR];
+      save();
+    },
+    save,
+    load,
+  };
+})();
+
+</script>
+    <script>
+/* ============================================================
+   App.js — Avigliano 2027 UI Controller v2
+   ============================================================ */
+const App = (() => {
+  const A = DataStore.AREAS;
+  const FC = {
+    Avigliano: [42.6533, 12.4272],
+    Sismano: [42.6717, 12.3975],
+    "Santa Restituta": [42.6383, 12.3883],
+    Toscolano: [42.6267, 12.3817],
+    Dunarobba: [42.665, 12.4467],
+    "Tutto il territorio": [42.6533, 12.4272],
+  };
+  let curArea = "all",
+    search = "",
+    fLoc = "",
+    fStato = "",
+    fTipo = "";
+  let map = null,
+    markers = [];
+
+  function init() {
+    renderHeroStats();
+    renderKPIs();
+    renderAreaTabs();
+    renderPromises();
+    renderOpere();
+    initMap();
+    renderWIP();
+    renderVotes();
+    renderFAQ();
+    initEvents();
+    initReveal();
+  }
+
+  function renderHeroStats() {
+    const m = DataStore.match(),
+      ps = DataStore.getProjects();
+    const done = ps.filter((p) => p.stato === "concluso").length;
+    const pct = m.total > 0 ? Math.round((m.covered / m.total) * 100) : 0;
+    document.getElementById("hero-stats").innerHTML = `
+      <div style="text-align:center"><p class="hero-stat-num"><span class="ctr" data-t="${pct}">0</span>%</p><p class="hero-stat-label">Programma coperto</p></div>
+      <div style="text-align:center"><p class="hero-stat-num"><span class="ctr" data-t="${done}">0</span></p><p class="hero-stat-label">Progetti conclusi</p></div>
+      <div style="text-align:center"><p class="hero-stat-num"><span class="ctr" data-t="${ps.length}">0</span></p><p class="hero-stat-label">Azioni totali</p></div>
+    `;
+  }
+
+  /* ---- KPIs ---- */
+  function renderKPIs() {
+    const m = DataStore.match(),
+      ps = DataStore.getProjects();
+    const done = ps.filter((p) => p.stato === "concluso").length;
+    const wip = ps.filter((p) => p.stato === "in_corso").length;
+    const inv = ps.reduce((s, p) => s + (p.importo || 0), 0);
+    const pct = m.total > 0 ? Math.round((m.covered / m.total) * 100) : 0;
+    const circ = 2 * Math.PI * 42;
+    document.getElementById("kpi-grid").innerHTML = `
+      <div class="kpi-card kpi-featured">
+        <div style="display:flex;align-items:center;justify-content:center;margin-bottom:12px">
+          <svg width="120" height="120" viewBox="0 0 100 100">
+            <circle class="prog-bg" cx="50" cy="50" r="42"/>
+            <circle class="prog-bar" cx="50" cy="50" r="42" stroke-dasharray="${circ}" stroke-dashoffset="${circ}" data-pct="${pct}"/>
+            <text x="50" y="55" text-anchor="middle" font-size="26" font-weight="900" fill="var(--ink)">${pct}%</text>
+          </svg>
+        </div>
+        <p class="kpi-label text-center">Avanzamento programma</p>
+      </div>
+      <div class="kpi-card"><p class="kpi-num"><span class="ctr" data-t="${m.covered}">0</span><span class="kpi-num-sub"> / ${m.total}</span></p><p class="kpi-label">Promesse coperte</p></div>
+      <div class="kpi-card"><p class="kpi-num" style="color:var(--green)"><span class="ctr" data-t="${done}">0</span></p><p class="kpi-label">Progetti conclusi</p></div>
+      <div class="kpi-card"><p class="kpi-num" style="color:var(--amber)"><span class="ctr" data-t="${wip}">0</span></p><p class="kpi-label">In corso</p></div>
+      <div class="kpi-card"><p class="kpi-num">€<span class="ctr" data-t="${inv}">0</span></p><p class="kpi-label">Investimenti (dati disponibili)</p></div>`;
+    setTimeout(() => {
+      document.querySelectorAll(".ctr").forEach((c) => {
+        const t = parseInt(c.dataset.t);
+        if (isNaN(t)) return;
+        gsap.to(
+          { v: 0 },
+          {
+            v: t,
+            duration: 2,
+            ease: "power2.out",
+            onUpdate() {
+              c.textContent = Math.round(this.targets()[0].v).toLocaleString(
+                "it-IT",
+              );
+            },
+          },
+        );
+      });
+      document.querySelectorAll(".prog-bar").forEach((c) => {
+        const p = parseInt(c.dataset.pct),
+          ci = 2 * Math.PI * 42;
+        gsap.to(c, {
+          strokeDashoffset: ci - (ci * p) / 100,
+          duration: 2.2,
+          ease: "power2.out",
+        });
+      });
+    }, 400);
+  }
+
+  /* ---- Area tabs ---- */
+  function renderAreaTabs() {
+    let h = '<button class="pill active" data-area="all">Tutte</button>';
+    Object.entries(A).forEach(([k, v]) => {
+      h += `<button class="pill" data-area="${k}">${v.icon} ${v.name}</button>`;
+    });
+    document.getElementById("area-tabs").innerHTML = h;
+    let mh = '<button class="pill active" data-area="all">Tutti</button>';
+    Object.entries(A).forEach(([k, v]) => {
+      mh += `<button class="pill" data-area="${k}">${v.icon}</button>`;
+    });
+    document.getElementById("map-filters").innerHTML = mh;
+    let oh = '<button class="pill active" data-area="all">Tutte</button>';
+    Object.entries(A).forEach(([k, v]) => {
+      oh += `<button class="pill" data-area="${k}">${v.icon}</button>`;
+    });
+    document.getElementById("opere-filters").innerHTML = oh;
+  }
+
+  /* ---- Promesse vs Risultati ---- */
+  function renderPromises() {
+    const el = document.getElementById("promise-list");
+    const promises = DataStore.getPromises(),
+      projects = DataStore.getProjects();
+    const s = search.toLowerCase();
+    let filtered = promises;
+    if (curArea !== "all")
+      filtered = filtered.filter((p) => p.area === curArea);
+    if (s)
+      filtered = filtered.filter((p) => {
+        const linked = projects.filter(
+          (r) => r.promesse && r.promesse.includes(p.id),
+        );
+        return (
+          p.testo.toLowerCase().includes(s) ||
+          p.tema.toLowerCase().includes(s) ||
+          linked.some((r) => r.titolo.toLowerCase().includes(s))
+        );
+      });
+    let html = "";
+    filtered.forEach((pr) => {
+      let linked = projects.filter(
+        (p) => p.promesse && p.promesse.includes(pr.id),
+      );
+      if (fLoc) linked = linked.filter((r) => r.localita === fLoc);
+      if (fStato) linked = linked.filter((r) => r.stato === fStato);
+      if (fTipo) linked = linked.filter((r) => r.tipo === fTipo);
+      const a = A[pr.area] || { name: "", icon: "", color: "#666" };
+      html += `<div class="promise-card" id="promise-${pr.id}">
+        <div class="promise-header" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.promise-arrow').style.transform=this.nextElementSibling.classList.contains('open')?'rotate(180deg)':''">
+          <span class="promise-icon">${a.icon}</span>
+          <div class="promise-meta">
+            <div class="promise-badges">
+              <span class="badge badge-area" style="background:${a.color}15;color:${a.color}">${a.name}</span>
+              <span class="promise-tema">${pr.tema}</span>
+              ${linked.length > 0 ? `<span class="badge badge-concluso">${linked.length} risultat${linked.length > 1 ? "i" : "o"}</span>` : '<span class="badge" style="background:var(--bg-card);color:var(--ink-4)">In attesa</span>'}
+            </div>
+            <p class="promise-text">${pr.testo}</p>
+          </div>
+          <svg class="promise-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+        <div class="promise-body">
+          <div class="promise-body-inner">
+            ${
+              linked.length > 0
+                ? linked
+                    .map((r) => {
+                      const tl =
+                        r.tipo === "opera"
+                          ? "🏗️ Opera"
+                          : r.tipo === "servizio"
+                            ? "🟢 Servizio"
+                            : "📋 Azione";
+                      return `<div class="result-card tipo-${r.tipo}">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+                  <span class="result-title">${r.titolo}</span>
+                  <span class="badge badge-${r.stato}">${r.stato === "concluso" ? "✓ Concluso" : r.stato === "in_corso" ? "⏳ In corso" : "📋 Programmato"}</span>
+                  <span class="badge badge-${r.tipo}">${tl}</span>
+                </div>
+                <p class="result-desc">${r.desc}</p>
+                ${r.impatto ? `<p class="result-impact">${r.impatto}</p>` : ""}
+                <div class="result-meta">
+                  ${r.localita ? `<span>📍 ${r.localita}</span>` : ""}${r.anno ? `<span>📅 ${r.anno}</span>` : ""}${r.importo ? `<span>💰 €${r.importo.toLocaleString("it-IT")}</span>` : ""}${r.fonte ? `<span>🏛 ${r.fonte}</span>` : ""}
+                </div>
+                ${r.link ? `<a href="${r.link}" target="_blank" style="font-size:12px;color:var(--c-500);margin-top:6px;display:inline-block;text-decoration:underline">Vedi atto →</a>` : ""}
+              </div>`;
+                    })
+                    .join("")
+                : '<p style="font-size:13px;color:var(--ink-4);font-style:italic">Nessun risultato collegato.</p>'
+            }
+          </div>
+        </div>
+      </div>`;
+    });
+    el.innerHTML =
+      html ||
+      '<p class="text-center" style="color:var(--ink-4);padding:48px 0">Nessun risultato.</p>';
+  }
+
+  /* ---- Opere Prima/Dopo ---- */
+  function renderOpere(area) {
+    area = area || "all";
+    const el = document.getElementById("opere-grid"),
+      emp = document.getElementById("opere-empty");
+    let ps = DataStore.getProjects().filter((p) => p.tipo === "opera");
+    if (area !== "all") ps = ps.filter((p) => p.area === area);
+    ps.sort((a, b) => {
+      const aH = a.prima?.length > 0 || a.dopo?.length > 0 ? 0 : 1;
+      const bH = b.prima?.length > 0 || b.dopo?.length > 0 ? 0 : 1;
+      return aH - bH;
+    });
+    let html = "";
+    ps.forEach((p) => {
+      const hasBa = p.prima?.length > 0 && p.dopo?.length > 0;
+      const hasAny = p.prima?.length > 0 || p.dopo?.length > 0;
+      const a = A[p.area] || { name: "", color: "#666" };
+      html += `<div class="opera-card">
+        ${
+          hasBa
+            ? `<div class="ba-slider"><img class="ba-after" src="${p.dopo[0]}" alt="Dopo: ${p.titolo}" loading="lazy"><div class="ba-before"><img src="${p.prima[0]}" alt="Prima: ${p.titolo}"></div><div class="ba-handle" style="left:50%"></div><span class="ba-label ba-label-prima">PRIMA</span><span class="ba-label ba-label-dopo">DOPO</span></div>`
+            : hasAny
+              ? `<div style="aspect-ratio:16/10;overflow:hidden;cursor:pointer" onclick="document.getElementById('lightbox-img').src='${p.dopo?.[0] || p.prima?.[0]}';document.getElementById('lightbox').classList.add('open')"><img src="${p.dopo?.[0] || p.prima?.[0]}" alt="${p.titolo}" style="width:100%;height:100%;object-fit:cover" loading="lazy"></div>`
+              : `<div class="opera-placeholder"><span style="font-size:24px;opacity:.3">📷</span><span>Foto in arrivo</span></div>`
+        }
+        <div class="opera-body">
+          <div style="display:flex;gap:6px;align-items:center;margin-bottom:8px;flex-wrap:wrap">
+            <span class="badge badge-${p.stato}">${p.stato === "concluso" ? "✓ Concluso" : "⏳ In corso"}</span>
+            <span class="badge badge-area" style="background:${a.color}15;color:${a.color}">${a.name}</span>
+          </div>
+          <h3 class="opera-title">${p.titolo}</h3>
+          <p class="opera-desc">${p.desc}</p>
+          ${p.note ? `<p class="opera-note">${p.note}</p>` : ""}
+          <div class="opera-meta">
+            ${p.localita ? `<span>📍 ${p.localita}</span>` : ""}${p.anno ? `<span>📅 ${p.anno}</span>` : ""}${p.importo ? `<span>💰 €${p.importo.toLocaleString("it-IT")}</span>` : ""}${p.fonte ? `<span>🏛 ${p.fonte}</span>` : ""}
+          </div>
+        </div>
+      </div>`;
+    });
+    if (!html) {
+      emp.style.display = "block";
+      el.innerHTML = "";
+    } else {
+      emp.style.display = "none";
+      el.innerHTML = html;
+    }
+    initSliders();
+  }
+
+  function initSliders() {
+    document.querySelectorAll(".ba-slider").forEach((sl) => {
+      const h = sl.querySelector(".ba-handle"),
+        b = sl.querySelector(".ba-before");
+      if (!h || !b) return;
+      function mv(x) {
+        const r = sl.getBoundingClientRect();
+        let p = Math.max(0, Math.min(1, (x - r.left) / r.width));
+        b.style.width = p * 100 + "%";
+        h.style.left = p * 100 + "%";
+      }
+      sl.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        mv(e.clientX);
+        const mm = (e2) => mv(e2.clientX);
+        const mu = () => {
+          document.removeEventListener("mousemove", mm);
+          document.removeEventListener("mouseup", mu);
+        };
+        document.addEventListener("mousemove", mm);
+        document.addEventListener("mouseup", mu);
+      });
+      sl.addEventListener(
+        "touchstart",
+        (e) => {
+          mv(e.touches[0].clientX);
+          const tm = (e2) => mv(e2.touches[0].clientX);
+          const te = () => {
+            sl.removeEventListener("touchmove", tm);
+            sl.removeEventListener("touchend", te);
+          };
+          sl.addEventListener("touchmove", tm);
+          sl.addEventListener("touchend", te);
+        },
+        { passive: true },
+      );
+    });
+  }
+
+  /* ---- Map ---- */
+  function initMap() {
+    map = L.map("map-container").setView([42.6533, 12.4272], 13);
+    L.tileLayer(
+      "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+      { attribution: "© CartoDB", maxZoom: 18 },
+    ).addTo(map);
+    renderMarkers("all");
+  }
+  function renderMarkers(area) {
+    markers.forEach((m) => map.removeLayer(m));
+    markers = [];
+    const cols = {
+      1: "#DC3F6E",
+      2: "#D4A74A",
+      3: "#7B5CF5",
+      4: "#12A87B",
+      5: "#2B7FFF",
+    };
+    let ps = DataStore.getProjects();
+    if (area !== "all") ps = ps.filter((p) => p.area === area);
+    ps.forEach((p) => {
+      const c = FC[p.localita] || FC["Avigliano"];
+      const j = [
+        c[0] + (Math.random() - 0.5) * 0.004,
+        c[1] + (Math.random() - 0.5) * 0.004,
+      ];
+      const col = cols[p.area] || "#2B7FFF";
+      const icon = L.divIcon({
+        className: "",
+        html: `<div style="width:14px;height:14px;border-radius:50%;background:${col};border:3px solid #1A1E28;box-shadow:0 2px 8px rgba(0,0,0,.2)"></div>`,
+        iconSize: [14, 14],
+        iconAnchor: [7, 7],
+      });
+      const mk = L.marker(j, { icon }).addTo(map);
+      mk.bindPopup(
+        `<div style="min-width:180px;font-family:Satoshi,sans-serif"><b style="font-size:13px">${p.titolo}</b><br><span style="font-size:12px;color:#666">${p.desc}</span><br><span style="font-size:11px;color:#999">${p.localita || ""} · ${p.stato}</span></div>`,
+      );
+      markers.push(mk);
+    });
+  }
+
+  /* ---- WIP ---- */
+  function renderWIP() {
+    const el = document.getElementById("wip-grid");
+    const wip = DataStore.getWIP();
+    el.innerHTML =
+      wip
+        .map((p) => {
+          const a = A[p.area] || { name: "", color: "#666" };
+          return `<div class="wip-card wip-${p.area}">
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:10px;flex-wrap:wrap">
+          <span class="badge badge-${p.stato}">${p.stato === "in_corso" ? "⏳ In corso" : "📋 Programmato"}</span>
+          <span style="font-size:12px;color:${a.color};font-weight:600">${a.icon} ${a.name}</span>
+        </div>
+        <h3 class="wip-title">${p.titolo}</h3>
+        <p class="wip-desc">${p.desc}</p>
+        ${p.impatto ? `<p class="wip-impact">${p.impatto}</p>` : ""}
+        <div class="wip-meta">${p.localita ? `<span>📍 ${p.localita}</span>` : ""}${p.importo ? `<span>💰 €${p.importo.toLocaleString("it-IT")}</span>` : ""}${p.fonte ? `<span>🏛 ${p.fonte}</span>` : ""}</div>
+      </div>`;
+        })
+        .join("") ||
+      '<p class="text-center" style="color:var(--ink-4);padding:48px">Nessun cantiere in corso.</p>';
+  }
+
+  /* ---- Votes ---- */
+  function renderVotes() {
+    const themes = [
+      {
+        id: "v1",
+        icon: "🏗️",
+        title: "Opere e manutenzioni",
+        desc: "Strade, edifici, infrastrutture",
+      },
+      {
+        id: "v2",
+        icon: "🌿",
+        title: "Ambiente e sostenibilità",
+        desc: "Energia, rifiuti, verde",
+      },
+      {
+        id: "v3",
+        icon: "🎭",
+        title: "Cultura e turismo",
+        desc: "Eventi, borghi, promozione",
+      },
+      {
+        id: "v4",
+        icon: "👨‍👩‍👧",
+        title: "Sociale e famiglie",
+        desc: "Servizi, giovani, anziani",
+      },
+      {
+        id: "v5",
+        icon: "💼",
+        title: "Lavoro e imprese",
+        desc: "Commercio, agricoltura, digitale",
+      },
+      {
+        id: "v6",
+        icon: "🔒",
+        title: "Sicurezza",
+        desc: "Polizia, partecipazione",
+      },
+    ];
+    const votes = JSON.parse(localStorage.getItem("av27_votes") || "{}");
+    const sel = JSON.parse(localStorage.getItem("av27_sel") || "[]");
+    document.getElementById("vote-grid").innerHTML = themes
+      .map(
+        (
+          t,
+        ) => `<div class="vote-card ${sel.includes(t.id) ? "selected" : ""}" data-vid="${t.id}" onclick="App.vote('${t.id}')">
+      <span class="vote-icon">${t.icon}</span><h3 class="vote-title">${t.title}</h3><p class="vote-desc">${t.desc}</p>
+      ${sel.includes(t.id) ? '<span class="badge" style="background:var(--accent);color:var(--c-950);margin-top:12px">✓ Selezionata</span>' : ""}
+    </div>`,
+      )
+      .join("");
+    const maxV = Math.max(1, ...themes.map((t) => votes[t.id] || 0));
+    document.getElementById("vote-results").innerHTML = themes
+      .map((t) => {
+        const v = votes[t.id] || 0;
+        return `<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="font-size:16px">${t.icon}</span><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:13px;color:white;margin-bottom:4px"><span>${t.title}</span><span style="font-weight:800">${v}</span></div><div style="background:rgba(255,255,255,.1);border-radius:999px;height:8px"><div style="background:var(--accent);height:100%;border-radius:999px;width:${maxV > 0 ? (v / maxV) * 100 : 0}%;transition:width .5s"></div></div></div></div>`;
+      })
+      .join("");
+  }
+  function vote(id) {
+    let sel = JSON.parse(localStorage.getItem("av27_sel") || "[]");
+    let votes = JSON.parse(localStorage.getItem("av27_votes") || "{}");
+    if (sel.includes(id)) {
+      sel = sel.filter((s) => s !== id);
+      votes[id] = Math.max(0, (votes[id] || 1) - 1);
+    } else {
+      if (sel.length >= 3) return;
+      sel.push(id);
+      votes[id] = (votes[id] || 0) + 1;
+    }
+    localStorage.setItem("av27_sel", JSON.stringify(sel));
+    localStorage.setItem("av27_votes", JSON.stringify(votes));
+    renderVotes();
+  }
+
+  /* ---- FAQ ---- */
+  function renderFAQ() {
+    const faqs = [
+      {
+        q: "I dati sono verificabili?",
+        a: "Sì. Ogni progetto è riconducibile a delibere o determine consultabili dall'albo pretorio.",
+      },
+      {
+        q: 'Perché alcuni progetti sono "in corso"?',
+        a: "Molti interventi, specie PNRR o regionali, hanno tempi che superano il mandato. Li indichiamo con trasparenza.",
+      },
+      {
+        q: "Come posso segnalare un problema?",
+        a: "Sportello del Cittadino, chat WhatsApp comunale, o i contatti in fondo alla pagina.",
+      },
+      {
+        q: "I voti sulle priorità sono vincolanti?",
+        a: "No, sono un'indicazione partecipativa per orientare il programma 2027.",
+      },
+    ];
+    document.getElementById("faq-list").innerHTML = faqs
+      .map(
+        (f) =>
+          `<div class="faq-item"><button class="faq-btn" onclick="const c=this.nextElementSibling;c.classList.toggle('open');this.querySelector('.faq-icon').textContent=c.classList.contains('open')?'−':'+'"><span>${f.q}</span><span class="faq-icon">+</span></button><div class="promise-body"><div style="padding:0 22px 18px"><p style="font-size:13px;color:var(--ink-2);line-height:1.65">${f.a}</p></div></div></div>`,
+      )
+      .join("");
+  }
+
+  /* ---- Events ---- */
+  function initEvents() {
+    document.getElementById("area-tabs").addEventListener("click", (e) => {
+      const b = e.target.closest(".pill");
+      if (!b) return;
+      curArea = b.dataset.area;
+      document
+        .querySelectorAll("#area-tabs .pill")
+        .forEach((t) => t.classList.remove("active"));
+      b.classList.add("active");
+      renderPromises();
+    });
+    document.getElementById("map-filters").addEventListener("click", (e) => {
+      const b = e.target.closest(".pill");
+      if (!b) return;
+      document
+        .querySelectorAll("#map-filters .pill")
+        .forEach((t) => t.classList.remove("active"));
+      b.classList.add("active");
+      renderMarkers(b.dataset.area);
+    });
+    document.getElementById("opere-filters").addEventListener("click", (e) => {
+      const b = e.target.closest(".pill");
+      if (!b) return;
+      document
+        .querySelectorAll("#opere-filters .pill")
+        .forEach((t) => t.classList.remove("active"));
+      b.classList.add("active");
+      renderOpere(b.dataset.area);
+    });
+    document.getElementById("search-input").addEventListener("input", (e) => {
+      search = e.target.value;
+      renderPromises();
+    });
+    document.getElementById("f-loc").addEventListener("change", (e) => {
+      fLoc = e.target.value;
+      renderPromises();
+    });
+    document.getElementById("f-stato").addEventListener("change", (e) => {
+      fStato = e.target.value;
+      renderPromises();
+    });
+    document.getElementById("f-tipo").addEventListener("change", (e) => {
+      fTipo = e.target.value;
+      renderPromises();
+    });
+    document.getElementById("how-calc-btn").addEventListener("click", () => {
+      document.getElementById("modal-calc").style.display = "flex";
+    });
+    document
+      .getElementById("vote-results-btn")
+      .addEventListener("click", () => {
+        const r = document.getElementById("vote-results");
+        r.style.display = r.style.display === "none" ? "block" : "none";
+      });
+    // Mobile
+    document
+      .getElementById("menu-btn")
+      .addEventListener("click", () =>
+        document.getElementById("mob-menu").classList.add("open"),
+      );
+    document
+      .getElementById("mob-close")
+      .addEventListener("click", () =>
+        document.getElementById("mob-menu").classList.remove("open"),
+      );
+    document
+      .querySelectorAll(".mob-link")
+      .forEach((l) =>
+        l.addEventListener("click", () =>
+          document.getElementById("mob-menu").classList.remove("open"),
+        ),
+      );
+    window.addEventListener("scroll", () => {
+      document
+        .getElementById("nav")
+        .classList.toggle("scrolled", window.scrollY > 40);
+    });
+    initAdmin();
+  }
+
+  /* ---- Reveal ---- */
+  function initReveal() {
+    gsap.registerPlugin(ScrollTrigger);
+    document.querySelectorAll(".reveal").forEach((el) => {
+      gsap.fromTo(
+        el,
+        { opacity: 0, y: 35 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power2.out",
+          scrollTrigger: { trigger: el, start: "top 88%", once: true },
+        },
+      );
+    });
+  }
+
+  /* ---- Admin ---- */
+  function initAdmin() {
+    const panel = document.getElementById("admin-panel"),
+      ov = document.getElementById("admin-overlay");
+    const close = () => {
+      panel.classList.remove("open");
+      ov.classList.remove("open");
+    };
+    document.getElementById("admin-btn").addEventListener("click", () => {
+      panel.classList.add("open");
+      ov.classList.add("open");
+    });
+    document.getElementById("close-admin").addEventListener("click", close);
+    ov.addEventListener("click", close);
+    document.getElementById("admin-login-btn").addEventListener("click", () => {
+      if (document.getElementById("admin-pw").value === "admin") {
+        document.getElementById("admin-login").style.display = "none";
+        document.getElementById("admin-main").style.display = "block";
+        renderAdminProjects();
+        renderAdminPromises();
+      } else alert("Password errata");
+    });
+    document.querySelectorAll("#admin-tabs .pill").forEach((t) =>
+      t.addEventListener("click", () => {
+        document
+          .querySelectorAll("#admin-tabs .pill")
+          .forEach((b) => b.classList.remove("active"));
+        t.classList.add("active");
+        ["a-projects", "a-promises", "a-data"].forEach(
+          (id) => (document.getElementById(id).style.display = "none"),
+        );
+        document.getElementById(t.dataset.tab).style.display = "block";
+      }),
+    );
+    document
+      .getElementById("add-proj-btn")
+      .addEventListener("click", () => openProjModal());
+    document
+      .getElementById("proj-form")
+      .addEventListener("submit", handleProjSave);
+    document.querySelector(".close-proj").addEventListener("click", () => {
+      document.getElementById("proj-modal").style.display = "none";
+    });
+    document
+      .getElementById("admin-search")
+      .addEventListener("input", () => renderAdminProjects());
+    document.getElementById("export-btn").addEventListener("click", () => {
+      const b = new Blob([DataStore.exportJSON()], {
+        type: "application/json",
+      });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(b);
+      a.download = "avigliano2027.json";
+      a.click();
+    });
+    document.getElementById("import-input").addEventListener("change", (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = () => {
+        if (DataStore.importJSON(r.result)) {
+          alert("Importato");
+          refreshAll();
+          renderAdminProjects();
+          renderAdminPromises();
+        } else alert("Errore");
+      };
+      r.readAsText(f);
+    });
+    document.getElementById("reset-btn").addEventListener("click", () => {
+      if (confirm("Reset tutti i dati?")) {
+        DataStore.reset();
+        refreshAll();
+        renderAdminProjects();
+        renderAdminPromises();
+      }
+    });
+    document.getElementById("pf-tipo").addEventListener("change", (e) => {
+      document.getElementById("pf-photo-section").style.display =
+        e.target.value === "opera" ? "block" : "none";
+    });
+  }
+
+  function renderAdminProjects() {
+    const el = document.getElementById("admin-proj-list");
+    const q = (
+      document.getElementById("admin-search")?.value || ""
+    ).toLowerCase();
+    let ps = DataStore.getProjects();
+    if (q)
+      ps = ps.filter(
+        (p) =>
+          p.titolo.toLowerCase().includes(q) ||
+          p.desc.toLowerCase().includes(q),
+      );
+    el.innerHTML = ps
+      .map((p) => {
+        const a = A[p.area] || { name: "" };
+        const hasP = p.prima?.length > 0 || p.dopo?.length > 0;
+        return `<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg-3);border-radius:var(--r-sm)">
+        <div style="flex:1;min-width:0"><p style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.titolo}</p><p style="font-size:11px;color:var(--ink-3)">${a.name} · ${p.tipo} · ${p.stato}${hasP ? " · 📷" : ""}${p.importo ? " · €" + p.importo.toLocaleString("it-IT") : ""}</p></div>
+        <button onclick="App.editProj('${p.id}')" style="background:var(--bg-card);border:none;padding:6px 10px;border-radius:var(--r-sm);cursor:pointer;font-size:12px">✏️</button>
+        <button onclick="App.delProj('${p.id}')" style="background:#FEF2F2;border:none;padding:6px 10px;border-radius:var(--r-sm);cursor:pointer;font-size:12px">🗑</button>
+      </div>`;
+      })
+      .join("");
+  }
+
+  function renderAdminPromises() {
+    const el = document.getElementById("admin-prom-list");
+    const projects = DataStore.getProjects();
+    el.innerHTML = DataStore.getPromises()
+      .map((p) => {
+        const linked = projects.filter(
+          (r) => r.promesse && r.promesse.includes(p.id),
+        );
+        return `<div style="padding:10px 12px;background:var(--bg-3);border-radius:var(--r-sm)"><p style="font-size:13px;font-weight:600">${p.id}: ${p.tema}</p><p style="font-size:11px;color:var(--ink-3);margin-top:2px">${p.testo.substring(0, 80)}…</p><p style="font-size:11px;margin-top:4px;color:${linked.length ? "var(--green)" : "var(--ink-4)"}">${linked.length} risultat${linked.length !== 1 ? "i" : "o"}</p></div>`;
+      })
+      .join("");
+  }
+
+  function openProjModal(p) {
+    document.getElementById("proj-modal").style.display = "flex";
+    document.getElementById("proj-modal-title").textContent = p
+      ? "Modifica"
+      : "Nuovo Progetto";
+    document.getElementById("pf-id").value = p?.id || "";
+    document.getElementById("pf-titolo").value = p?.titolo || "";
+    document.getElementById("pf-area").value = p?.area || "1";
+    document.getElementById("pf-tipo").value = p?.tipo || "opera";
+    document.getElementById("pf-desc").value = p?.desc || "";
+    document.getElementById("pf-impatto").value = p?.impatto || "";
+    document.getElementById("pf-loc").value = p?.localita || "Avigliano";
+    document.getElementById("pf-anno").value = p?.anno || "";
+    document.getElementById("pf-stato").value = p?.stato || "concluso";
+    document.getElementById("pf-importo").value = p?.importo || "";
+    document.getElementById("pf-fonte").value = p?.fonte || "";
+    document.getElementById("pf-prom").value = (p?.promesse || []).join(",");
+    document.getElementById("pf-link").value = p?.link || "";
+    document.getElementById("pf-note").value = p?.note || "";
+    document.getElementById("pf-photo-section").style.display =
+      (p?.tipo || "opera") === "opera" ? "block" : "none";
+    document.getElementById("pf-prima-prev").innerHTML = (p?.prima || [])
+      .map(
+        (img) =>
+          `<img src="${img}" style="width:48px;height:48px;object-fit:cover;border-radius:4px;border:1px solid var(--c-100)">`,
+      )
+      .join("");
+    document.getElementById("pf-dopo-prev").innerHTML = (p?.dopo || [])
+      .map(
+        (img) =>
+          `<img src="${img}" style="width:48px;height:48px;object-fit:cover;border-radius:4px;border:1px solid var(--green)">`,
+      )
+      .join("");
+  }
+
+  async function handleProjSave(e) {
+    e.preventDefault();
+    const id = document.getElementById("pf-id").value;
+    const data = {
+      id: id || "R" + Date.now(),
+      area: document.getElementById("pf-area").value,
+      tipo: document.getElementById("pf-tipo").value,
+      titolo: document.getElementById("pf-titolo").value,
+      desc: document.getElementById("pf-desc").value,
+      impatto: document.getElementById("pf-impatto").value,
+      localita: document.getElementById("pf-loc").value,
+      anno: document.getElementById("pf-anno").value,
+      stato: document.getElementById("pf-stato").value,
+      importo: parseInt(document.getElementById("pf-importo").value) || null,
+      fonte: document.getElementById("pf-fonte").value,
+      promesse: document
+        .getElementById("pf-prom")
+        .value.split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+      link: document.getElementById("pf-link").value,
+      note: document.getElementById("pf-note").value,
+      prima: [],
+      dopo: [],
+    };
+    if (id) {
+      const old = DataStore.getProjects().find((p) => p.id === id);
+      if (old) {
+        data.prima = old.prima || [];
+        data.dopo = old.dopo || [];
+      }
+    }
+    const pf = document.getElementById("pf-prima").files;
+    const df = document.getElementById("pf-dopo").files;
+    for (const f of pf) data.prima.push(await compress(f));
+    for (const f of df) data.dopo.push(await compress(f));
+    if (id) DataStore.updateProject(id, data);
+    else DataStore.addProject(data);
+    document.getElementById("proj-modal").style.display = "none";
+    renderAdminProjects();
+    refreshAll();
+  }
+
+  function compress(file) {
+    return new Promise((res) => {
+      const r = new FileReader();
+      r.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const c = document.createElement("canvas");
+          const max = 800;
+          let w = img.width,
+            h = img.height;
+          if (w > max) {
+            h = (h * max) / w;
+            w = max;
+          }
+          c.width = w;
+          c.height = h;
+          c.getContext("2d").drawImage(img, 0, 0, w, h);
+          res(c.toDataURL("image/jpeg", 0.7));
+        };
+        img.src = r.result;
+      };
+      r.readAsDataURL(file);
+    });
+  }
+  function editProj(id) {
+    const p = DataStore.getProjects().find((pr) => pr.id === id);
+    if (p) openProjModal(p);
+  }
+  function delProj(id) {
+    if (confirm("Eliminare?")) {
+      DataStore.deleteProject(id);
+      renderAdminProjects();
+      refreshAll();
+    }
+  }
+  function refreshAll() {
+    renderKPIs();
+    renderPromises();
+    renderOpere();
+    renderWIP();
+    renderMarkers("all");
+  }
+
+  return { init, vote, editProj, delProj, refreshAll };
+})();
+document.addEventListener("DOMContentLoaded", () => App.init());
+
+</script>
+  </body>
+</html>
